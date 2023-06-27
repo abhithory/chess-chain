@@ -38,12 +38,11 @@ function ChessBoard() {
     }
 
     useEffect(() => {
-        setGameHistroy(game.history())
-
+        
         console.log("==============");
-        console.log(game.turn());
-        console.log( game.pgn({ max_width: 1 }));
-        console.log( typeof game.pgn({ newline: '\n' }));
+        // console.log(game.turn());
+        // setGameHistroy(game.history())
+        // console.log( game.pgn({ max_width: 1 }));
         
         // console.log("in_check",game.in_check());
         // console.log("in_checkmate",game.in_checkmate());
