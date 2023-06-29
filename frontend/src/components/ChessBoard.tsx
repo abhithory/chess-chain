@@ -24,16 +24,16 @@ function ChessBoard() {
         makeAMove(possibleMoves[randomIndex]);
     }
 
-    function onDrop(sourceSquare: any, targetSquare: any) {
+    function onDrop(sourceSquare: any, targetSquare: any,piece:any) {
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
-            promotion: "q", // always promote to a queen for example simplicity
+            promotion: piece[1].toLowerCase() ?? "q",
         });
 
         // illegal move
         if (move === null) return false;
-        setTimeout(makeRandomMove, 200);
+        // setTimeout(makeRandomMove, 200);
         return true;
     }
 
@@ -52,14 +52,13 @@ function ChessBoard() {
         // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
         // console.log("gameover",game.game_over());
         
-
-        
     }, [game])
     
 
     return (
         <div className="w-[30rem] flex">
-            <Chessboard position={game.fen()} onPieceDrop={onDrop}
+            <Chessboard
+             position={game.fen()} onPieceDrop={onDrop}
             />
             <div className="flex flex-col">
                 {gameHistroy && gameHistroy.map((item, key)=>{
