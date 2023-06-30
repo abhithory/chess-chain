@@ -1,17 +1,20 @@
 "use client"
 
+
 import ChessBoard from '@/components/ChessBoard'
 import { ChessGameInterface } from '@/interface';
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client';
-
-
 const socket = io('http://localhost:3001');
+import { useAddress } from "@thirdweb-dev/react";
+
 
 
 
 export default function Home() {
+  const address = useAddress();
+
 
   const [connectedToWebsoket, setConnectedToWebsoket] = useState(false);
   const [userSocketId, setUserSocketId] = useState("");
@@ -82,8 +85,10 @@ export default function Home() {
 
   return (
     <section className="flex_center h-screen w-screen gap-5">
-      <h1>Welcome to chess chain</h1>
-      <div className="border border-2 p-4 flex_center gap-4">
+      <h1>Welcome to chess chain</h1>      
+
+      {address ?      
+      <div className="border p-4 flex_center gap-4">
         {userSocketId &&
           <h4>Your id: {userSocketId}</h4>
         }
@@ -103,6 +108,10 @@ export default function Home() {
           <h4>Room created: {roomCodeToSend} | share this code with other to join game</h4>
         }
       </div>
+      :
+      <h1>Connect wallet</h1>
+      }
+
 
       {connectedToRoom &&
         <ChessBoard socket={chessGameDetails.socket} boardOrientation={chessGameDetails.boardOrientation} userSocketId={chessGameDetails.userSocketId} opponentSocketId={chessGameDetails.opponentSocketId}  />

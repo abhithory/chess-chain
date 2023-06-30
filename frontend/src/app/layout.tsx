@@ -1,3 +1,5 @@
+import Navigation from '@/components/Navigation'
+import ThirdWebProvider from '@/components/provider/ThirdWebProvider'
 import '@/style/globals.css'
 
 export const metadata = {
@@ -13,9 +15,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main>
-          {children}
-        </main>
+        <ThirdWebProvider>
+          <main>
+            <Navigation />
+            {children}
+          </main>
+        </ThirdWebProvider>
       </body>
     </html>
   )
