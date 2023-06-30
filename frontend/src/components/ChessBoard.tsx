@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from 'react'
 import Chess from "chess.js";
 import { Chessboard } from "react-chessboard";
+import { ChessGameInterface } from '@/interface';
 
 
-function ChessBoard() {
+
+function ChessBoard({ boardOrientation }: ChessGameInterface) {
     // @ts-ignore: someting in chess libarray
     const [game, setGame] = useState(new Chess());
     const [gameHistroy, setGameHistroy] = useState([])
-    
+
     function makeAMove(move: { from: any; to: any; promotion: string; }) {
         const gameCopy = { ...game };
         const result = gameCopy.move(move);
@@ -24,7 +26,7 @@ function ChessBoard() {
         makeAMove(possibleMoves[randomIndex]);
     }
 
-    function onDrop(sourceSquare: any, targetSquare: any,piece:any) {
+    function onDrop(sourceSquare: any, targetSquare: any, piece: any) {
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
@@ -38,12 +40,11 @@ function ChessBoard() {
     }
 
     useEffect(() => {
-        
         console.log("==============");
         // console.log(game.turn());
         // setGameHistroy(game.history())
         // console.log( game.pgn({ max_width: 1 }));
-        
+
         // console.log("in_check",game.in_check());
         // console.log("in_checkmate",game.in_checkmate());
         // console.log("in_stalemate",game.in_stalemate());
@@ -51,17 +52,17 @@ function ChessBoard() {
 
         // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
         // console.log("gameover",game.game_over());
-        
+
     }, [game])
-    
+
 
     return (
         <div className="w-[30rem] flex">
-            <Chessboard
-             position={game.fen()} onPieceDrop={onDrop}
+            <Chessboard boardOrientation={boardOrientation}
+                position={game.fen()} onPieceDrop={onDrop}
             />
             <div className="flex flex-col">
-                {gameHistroy && gameHistroy.map((item, key)=>{
+                {gameHistroy && gameHistroy.map((item, key) => {
                     return (
                         <span>{item}</span>
                     )
