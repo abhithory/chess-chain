@@ -9,19 +9,24 @@ import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
 
+
+
 export default function Home() {
 
   const [connectedToWebsoket, setConnectedToWebsoket] = useState(false);
   const [userSocketId, setUserSocketId] = useState("");
   const [connectedToRoom, setConnectedToRoom] = useState(false);
-  const [connectedWith, setConnectedWith] = useState("");
+  const [opponentSocketId, setOpponentSocketId] = useState("");
   const [roomCodeToSend, setRoomCodeToSend] = useState("");
 
 
   // chessgame details
 
   const [chessGameDetails, setChessGameDetails] = useState<ChessGameInterface>({
-    boardOrientation: "white"
+    boardOrientation: "white",
+    socket: "",
+    userSocketId: "",
+    opponentSocketId: "",
   })
 
 
@@ -29,6 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.on('connect', () => {
+      setChessGameDetails({ ...chessGameDetails, socket: socket,userSocketId: socket.id});
       setUserSocketId(socket.id)
       setConnectedToWebsoket(true);
     });
@@ -36,25 +42,42 @@ export default function Home() {
 
   async function joinRoom(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!e.target?.roomcode?.value || !userSocketId) return;
-    function connectedToRoom() {
-      setConnectedToRoom(true)
-      setConnectedWith(e.target?.roomcode?.value);
-      setChessGameDetails({ ...chessGameDetails, boardOrientation: "black" });
+    const _opponentSocketId = e.target?.roomcode?.value;
+    if (!_opponentSocketId || !userSocketId) return;
 
+    function connectWithRoom() {
+      setChessGameDetails({ ...chessGameDetails, opponentSocketId: _opponentSocketId,boardOrientation: "black" });
+      setConnectedToRoom(true)
+      setOpponentSocketId(_opponentSocketId);
     }
-    connectedToRoom()
+    socket.emit("connect-with-player", userSocketId, _opponentSocketId, connectWithRoom);
   }
 
   function createRoom() {
     if (!userSocketId) return;
     setChessGameDetails({ ...chessGameDetails, boardOrientation: "white" });
     setRoomCodeToSend(userSocketId);
-
-    setConnectedWith("connected");
-    setConnectedToRoom(true)
-
   }
+
+
+  useEffect(() => {
+    socket.on("connection-req-from-player", (_opponentSocketId) => {
+      console.log("connection req", _opponentSocketId);
+      
+      setOpponentSocketId(_opponentSocketId);
+      setConnectedToRoom(true)
+      setChessGameDetails({ ...chessGameDetails, boardOrientation: "white" });
+      setChessGameDetails({ ...chessGameDetails, opponentSocketId: _opponentSocketId});
+
+      // setTimeout(()=>{
+      //   acceptRequest()
+      // }, 5000)
+    })
+    return () => {
+      socket.off('connection-req-from-player')
+    }
+  },)
+
 
 
   return (
@@ -66,7 +89,7 @@ export default function Home() {
         }
 
         {connectedToRoom ?
-          <h4>connected with {connectedWith}</h4>
+          <h4>connected with {opponentSocketId}</h4>
           :
           <form onSubmit={joinRoom}>
             <input className='basic_input' id='roomcode' name='roomcode' type="text" placeholder="code of room which you want to join" />
@@ -82,7 +105,7 @@ export default function Home() {
       </div>
 
       {connectedToRoom &&
-        <ChessBoard boardOrientation={chessGameDetails.boardOrientation} />
+        <ChessBoard socket={chessGameDetails.socket} boardOrientation={chessGameDetails.boardOrientation} userSocketId={chessGameDetails.userSocketId} opponentSocketId={chessGameDetails.opponentSocketId}  />
       }
     </section>
   )

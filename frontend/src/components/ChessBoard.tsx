@@ -6,7 +6,7 @@ import { ChessGameInterface } from '@/interface';
 
 
 
-function ChessBoard({ boardOrientation }: ChessGameInterface) {
+function ChessBoard({ boardOrientation, socket, opponentSocketId, userSocketId }: ChessGameInterface) {
     // @ts-ignore: someting in chess libarray
     const [game, setGame] = useState(new Chess());
     const [gameHistroy, setGameHistroy] = useState([])
@@ -27,6 +27,8 @@ function ChessBoard({ boardOrientation }: ChessGameInterface) {
     }
 
     function onDrop(sourceSquare: any, targetSquare: any, piece: any) {
+        if (game.turn() !== boardOrientation[0]) return false
+
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
@@ -35,7 +37,13 @@ function ChessBoard({ boardOrientation }: ChessGameInterface) {
 
         // illegal move
         if (move === null) return false;
-        // setTimeout(makeRandomMove, 200);
+
+        socket.emit("move-chess-piece", opponentSocketId, {
+            from: sourceSquare,
+            to: targetSquare,
+            promotion: piece[1].toLowerCase() ?? "q",
+        })
+
         return true;
     }
 
@@ -54,6 +62,20 @@ function ChessBoard({ boardOrientation }: ChessGameInterface) {
         // console.log("gameover",game.game_over());
 
     }, [game])
+
+
+
+    useEffect(() => {
+        socket.on("chess-piece-moved", (move: any) => {
+            makeAMove(move)
+        })
+        return () => {
+            socket.off('chess-piece-moved')
+        }
+    },)
+
+    console.log(boardOrientation);
+
 
 
     return (

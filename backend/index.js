@@ -16,13 +16,16 @@ const io = socketIO(server, {
 });
 
 io.on('connection', socket => {
-    // socket.on('message-from-client', (message, receiver) => {
-    //     // if (receiver) {
-    //     socket.to(receiver).emit('message-from-server', message);
-    //     // }else{
-    //     //     socket.broadcast.emit('message-from-server', message);
-    //     // }
-    // });
+    socket.on('connect-with-player', (from,to,connectedToRoom) => {
+        socket.to(to).emit('connection-req-from-player', from);
+        connectedToRoom()
+    });
+
+
+    socket.on('move-chess-piece', (opponentId, moveData) => {
+        socket.to(opponentId).emit('chess-piece-moved', moveData);
+    });
+
 
     //   socket.on('disconnect', () => {
     //     console.log('A user disconnected');
