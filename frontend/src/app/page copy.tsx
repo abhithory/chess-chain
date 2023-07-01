@@ -6,7 +6,6 @@ import { ChessGameInterface } from '@/interface';
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client';
-const socket = io('http://localhost:3001');
 import { useAddress } from "@thirdweb-dev/react";
 
 

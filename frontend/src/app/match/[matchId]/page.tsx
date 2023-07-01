@@ -3,15 +3,19 @@
 import { getMatchDetailsApiCall } from '@/apiCalls/matchApiCalls';
 import React, { useEffect, useState } from 'react'
 import { useAddress } from "@thirdweb-dev/react";
+import LiveChessGame from '@/components/LiveChessGame';
+import { ChessGameDetailsInterface } from '@/interface';
 
 
 
 export default function Page({ params: { matchId } }: { params: { matchId: string } }) {
     const address = useAddress();
 
-    const [chessGameDetails, setChessGameDetails] = useState({
+    const [chessGameDetails, setChessGameDetails] = useState<ChessGameDetailsInterface>({
+        matchId: "",
+        isMatchCreator: true,
         boardOrientation: "white",
-        yourAddress:"",
+        myAddress: "",
         opponentAddress: "",
     })
 
@@ -20,11 +24,13 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
 
     async function loadMatchData() {
         setLoadingMatchData(true);
+        if (!address) return
         const response = await getMatchDetailsApiCall(matchId);
         if (response?.statusText === "OK") {
-
-            console.log(response.data.data);
-
+            const data = response.data.data
+            const isMatchCreator = data.matchCreatorAddress === address
+            const boardOrientation = data.matchCreatorAddress === address ? "white" : "black";
+            setChessGameDetails({ matchId, isMatchCreator, boardOrientation, myAddress: address, opponentAddress: isMatchCreator ? data.matchJoinerAddress : data.matchCreatorAddress })
             setLoadingMatchData(false);
         }
 
@@ -33,11 +39,10 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
         loadMatchData();
     }, [])
 
-    return (<form>
-        <input className='basic_input' id='roomcode' name='roomcode' type="text" placeholder="code of room which you want to join" />
-        <button className='basic_btn' type='submit'>
-            Join Match
-        </button>
-    </form>)
+    return (loadingMatchData ?
+        <h1>Loading match Details</h1>
+        :
+        <LiveChessGame chessGameDetails={chessGameDetails} />
+    )
 }
 

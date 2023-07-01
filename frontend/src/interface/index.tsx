@@ -1,7 +1,8 @@
 
-export interface ChessGameInterface {
+export interface ChessGameDetailsInterface {
+    matchId: string,
+    isMatchCreator: boolean,
     boardOrientation: "white" | "black";
-    socket:  any;
-    userSocketId: string;
-    opponentSocketId: string;
+    myAddress: string;
+    opponentAddress: string;
 }
