@@ -5,11 +5,9 @@ dotenv.config();
 
 
 
-const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
-
 mongoose.connect(process.env.DATABASE_URL).then(con => {
   // console.log(con.connection);
-  console.log("Connected succefully");
+  console.log("Connected to database succefully");
 }).catch(err => {
   console.log("Error while connecting to DB", err);
 })
