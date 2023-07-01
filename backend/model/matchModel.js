@@ -11,6 +11,10 @@ const matchSchema = new mongoose.Schema({
         type: String,
         required: [true, "There must be a game creator"],
     },
+    stackedAmount: {
+        type: Number,
+        required: [true, "There must be a staked amount"],
+    },
     matchJoinerAddress: {
         type: String
     },
