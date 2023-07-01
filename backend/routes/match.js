@@ -9,7 +9,7 @@ matchRouter
     .post(createMatch);
 
 matchRouter
-    .route("/:id")
+    .route("/:matchId")
     .get(getMatchById);
 
 
