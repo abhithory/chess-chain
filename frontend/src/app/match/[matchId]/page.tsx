@@ -33,7 +33,6 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
             setChessGameDetails({ matchId, isMatchCreator, boardOrientation, myAddress: address, opponentAddress: isMatchCreator ? data.matchJoinerAddress : data.matchCreatorAddress })
             setLoadingMatchData(false);
         }
-
     }
     useEffect(() => {
         loadMatchData();

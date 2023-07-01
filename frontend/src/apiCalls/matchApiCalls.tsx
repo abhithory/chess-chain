@@ -3,6 +3,15 @@ import axios, { AxiosResponse } from 'axios';
 
 export const apiBaseUrl = "http://localhost:3001/api/v1"
 
+export const getMatchDetailsApiCall = async (matchId:string) => {
+    try {
+        const response: AxiosResponse<MatchDataResponse> = await axios.get(`${apiBaseUrl}/match/${matchId}`);
+        return response
+    } catch (error) {
+        console.log("createMatchApiCall",error);
+    }
+}
+
 export const createMatchApiCall = async (matchCreatorAddress: string, stackedAmount:number ) => {
     try {
         const response: AxiosResponse<MatchDataResponse> = await axios.post(`${apiBaseUrl}/match/create`,{
@@ -15,9 +24,12 @@ export const createMatchApiCall = async (matchCreatorAddress: string, stackedAmo
     }
 }
 
-export const getMatchDetailsApiCall = async (matchId) => {
+
+export const joinMatchApiCall = async (matchCreatorAddress: string ) => {
     try {
-        const response: AxiosResponse<MatchDataResponse> = await axios.get(`${apiBaseUrl}/match/${matchId}`);
+        const response: AxiosResponse<MatchDataResponse> = await axios.patch(`${apiBaseUrl}/match/joinmatch`,{
+            matchCreatorAddress
+        });
         return response
     } catch (error) {
         console.log("createMatchApiCall",error);

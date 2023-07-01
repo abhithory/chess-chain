@@ -8,7 +8,6 @@ import { ChessGameDetailsInterface } from '@/interface';
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-const socket = io('http://localhost:3001');
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
 
@@ -115,6 +114,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     return (
         <div className="w-[30rem] flex">
+
             <Chessboard boardOrientation={boardOrientation}
                 position={game.fen()} onPieceDrop={onDrop}
             />
