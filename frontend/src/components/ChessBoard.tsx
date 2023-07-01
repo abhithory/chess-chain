@@ -18,13 +18,13 @@ function ChessBoard({ boardOrientation, socket, opponentSocketId, userSocketId }
         return result; // null if the move was illegal, the move object if the move was legal
     }
 
-    function makeRandomMove() {
-        const possibleMoves = game.moves();
-        if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-            return; // exit if the game is over
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        makeAMove(possibleMoves[randomIndex]);
-    }
+    // function makeRandomMove() {
+    //     const possibleMoves = game.moves();
+    //     if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
+    //         return; // exit if the game is over
+    //     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    //     makeAMove(possibleMoves[randomIndex]);
+    // }
 
     function onDrop(sourceSquare: any, targetSquare: any, piece: any) {
         if (game.turn() !== boardOrientation[0]) return false
@@ -35,9 +35,7 @@ function ChessBoard({ boardOrientation, socket, opponentSocketId, userSocketId }
             promotion: piece[1].toLowerCase() ?? "q",
         });
 
-        // illegal move
         if (move === null) return false;
-
         socket.emit("move-chess-piece", opponentSocketId, {
             from: sourceSquare,
             to: targetSquare,
@@ -80,7 +78,7 @@ function ChessBoard({ boardOrientation, socket, opponentSocketId, userSocketId }
 
     return (
         <div className="w-[30rem] flex">
-            <Chessboard boardOrientation={boardOrientation}
+            <Chessboard boardOrientation={boardOrientation}  
                 position={game.fen()} onPieceDrop={onDrop}
             />
             <div className="flex flex-col">

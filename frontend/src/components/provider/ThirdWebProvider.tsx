@@ -2,7 +2,7 @@
 import {
     ThirdwebProvider,
     metamaskWallet,
-    walletConnect,
+    // walletConnect,
 } from "@thirdweb-dev/react";
 
 import { Ethereum, Polygon, Mumbai } from "@thirdweb-dev/chains";
@@ -11,7 +11,7 @@ import { Ethereum, Polygon, Mumbai } from "@thirdweb-dev/chains";
 function ThirdWebProvider({ children }: any) {
     return (
         <ThirdwebProvider
-            supportedWallets={[metamaskWallet(), walletConnect()]}
+            supportedWallets={[metamaskWallet()]}
             activeChain="mumbai"
             supportedChains={[ Polygon, Mumbai]}
             dAppMeta={{
