@@ -2,10 +2,14 @@ const Match = require("../model/matchModel");
 const AppError = require("../utils/AppError");
 const { catchAsync } = require("../utils/catchAsync");
 
+const { v4: uuidv4 } = require('uuid');
+
+
 
 
 exports.createMatch = catchAsync(async (req, res, next) => {
-    const { matchId, matchCreatorAddress, stackedAmount } = req.body;
+    const { matchCreatorAddress, stackedAmount } = req.body;
+    const matchId = uuidv4();
     const _match = await Match.findOne({matchId});
 
 
