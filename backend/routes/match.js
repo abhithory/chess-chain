@@ -5,7 +5,7 @@ const matchRouter = express.Router();
 
 
 matchRouter
-    .route("/")
+    .route("/create")
     .post(createMatch);
 
 matchRouter
@@ -14,10 +14,10 @@ matchRouter
 
 matchRouter
     .route("/joinmatch")
-    .get(joinMatch);
+    .patch(joinMatch);
 matchRouter
     .route("/setmatchwinner")
-    .get(setMatchWinner);
+    .patch(setMatchWinner);
 
 
 

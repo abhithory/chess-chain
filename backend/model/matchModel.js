@@ -14,12 +14,15 @@ const matchSchema = new mongoose.Schema({
     stackedAmount: {
         type: Number,
         required: [true, "There must be a staked amount"],
+        default:0
     },
     matchJoinerAddress: {
-        type: String
+        type: String,
+        default:""
     },
     matchWinnerAddress: {
-        type: String
+        type: String,
+        default:""
     },
     createdAt: {
         type: Date,

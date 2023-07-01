@@ -6,7 +6,8 @@ const { catchAsync } = require("../utils/catchAsync");
 
 exports.createMatch = catchAsync(async (req, res, next) => {
     const { matchId, matchCreatorAddress, stackedAmount } = req.body;
-    const _match = await Match.findById(matchId);
+    const _match = await Match.findOne({matchId});
+
 
     if (_match) {
         return next(new AppError("Match already created with this id", 400));
@@ -18,7 +19,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
 
 exports.getMatchById = catchAsync(async (req, res, next) => {
     const matchId = req.params.matchId;
-    const match = await Match.findById(matchId);
+    const match = await Match.findOne({matchId});
 
     if (!match) {
         return next(new AppError("No Match found with that ID", 404));
@@ -29,7 +30,7 @@ exports.getMatchById = catchAsync(async (req, res, next) => {
 
 exports.joinMatch = catchAsync(async (req, res, next) => {
     const { matchId, matchJoinerAddress } = req.body;
-    const match = await Match.findByIdAndUpdate(matchId, {
+    const match = await Match.findOneAndUpdate({matchId}, {
         matchJoinerAddress
     });
     if (!match) {
@@ -40,7 +41,7 @@ exports.joinMatch = catchAsync(async (req, res, next) => {
 
 exports.setMatchWinner = catchAsync(async (req, res, next) => {
     const { matchId, matchWinnerAddress } = req.body;
-    const match = await Match.findByIdAndUpdate(matchId, {
+    const match = await Match.findOneAndUpdate({matchId}, {
         matchWinnerAddress
     });
     if (!match) {
