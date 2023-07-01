@@ -16,7 +16,6 @@ export default function Home() {
   const address = useAddress();
 
 
-  const [connectedToWebsoket, setConnectedToWebsoket] = useState(false);
   const [userSocketId, setUserSocketId] = useState("");
   const [connectedToRoom, setConnectedToRoom] = useState(false);
   const [opponentSocketId, setOpponentSocketId] = useState("");
@@ -39,7 +38,6 @@ export default function Home() {
     socket.on('connect', () => {
       setChessGameDetails({ ...chessGameDetails, socket: socket,userSocketId: socket.id});
       setUserSocketId(socket.id)
-      setConnectedToWebsoket(true);
     });
   }, []);
 
