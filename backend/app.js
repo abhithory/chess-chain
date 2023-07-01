@@ -3,6 +3,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const cors = require('cors');
 const matchRouter = require('./routes/match');
+const { globalErrorHandler } = require('./controller/errorController');
 
 
 const app = express();
@@ -10,11 +11,13 @@ app.use(cors()); // Enable CORS for Express.js
 
 app.use("/api/v1/match",matchRouter);
 
-const server = http.createServer(app);
-const io = socketIO(server, {
+
+const appServer = http.createServer(app);
+const io = socketIO(appServer, {
     cors: {
-        origin: 'http://localhost:3000', // Replace with your allowed origin
-        methods: ['GET', 'POST'], // Specify the allowed HTTP methods
+        // origin: 'http://localhost:3000', 
+        origin: '*', 
+        methods: ['GET', 'POST'],
     },
 });
 io.on('connection', socket => {
@@ -37,7 +40,7 @@ io.on('connection', socket => {
     //   });
 });
 
-const port = 3001;
-server.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
+
+app.use(globalErrorHandler);
+
+module.exports = appServer;
