@@ -36,7 +36,7 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
     }
     useEffect(() => {
         loadMatchData();
-    }, [])
+    }, [address])
 
     return (loadingMatchData ?
         <h1>Loading match Details</h1>

@@ -17,7 +17,7 @@ export default function Home() {
 
 
   return (
-    <section className="flex_center h-screen w-screen gap-5">
+    <section className="page_section flex_center  gap-5">
       <h1>Welcome to chess chain</h1>
 
       {address ?

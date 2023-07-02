@@ -15,13 +15,22 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
 
-    const [socket, setSocket] = useState<any>(null);
+    const [socket, setSocket] = useState<any>();
 
 
     const [game, setGame] = useState(new Chess());
     const [gameHistroy, setGameHistroy] = useState<string[]>([]);
 
     const [areBothPlayerConnected, setAreBothPlayerConnected] = useState(false);
+    
+    const [isCheck, setIsCheck] = useState(false);
+    
+    const [matchEndData, setMatchEndData] = useState<any>({
+        matchOver:false,
+                amIWinner:false
+    });
+
+    
 
 
     function makeAMove(move: { from: any; to: any; promotion: any; }) {
@@ -49,12 +58,19 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     function checkAndUpdateDetails() {
 
         console.log("=================", game.turn(), "=================");
+        setIsCheck(game.in_check())
+
+
+        if(game.game_over()){
+            setMatchEndData({
+                matchOver:true,
+                amIWinner:game.turn() !== boardOrientation[0]
+            })
+        }
 
         // console.log(game.turn());
         setGameHistroy([...game.history()])
         // console.log(game.pgn({ max_width: 1 }));
-
-        // console.log("in_check", game.in_check());
 
         // console.log("gameover",game.game_over());
         // // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
@@ -102,11 +118,17 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                 setBothPlayerConnected()
             })
         }
+    }
+
+    useEffect(() => {
+        if (!socket) return
+        connectWithOpponent();
         return () => {
             socket.off('connection-req-from-player')
             socket.off('connection-req-accepted')
         }
-    }
+    }, [socket])
+
     useEffect(() => {
         const socketURI = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
         if (!socketURI) {
@@ -115,10 +137,10 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         }
         const _socket = io(socketURI);
         _socket.on('connect', () => {
-            _socket.emit("join-match", matchId, connectWithOpponent);
+            _socket.emit("join-match", matchId, () => { });
+            setSocket(_socket);
             console.log("1. joined match and connecting with opponent");
 
-            setSocket(_socket);
         });
 
         return () => {
@@ -131,16 +153,28 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         <div className="w-full flex">
             {areBothPlayerConnected ?
                 <>
+                <div>
                     <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
                         position={game.fen()} onPieceDrop={onDrop}
                     />
+                    {isCheck&&
+                    <h1>Check</h1>
+                    }
+                </div>
                     <div className="flex flex-col">
                         {gameHistroy && gameHistroy.map((item, key) => {
                             return (
-                                <span>{item}</span>
+                                <span key={key}>{item}</span>
                             )
                         })}
                     </div>
+
+                <LoadingModel isOpen={matchEndData?.matchOver}>
+                            <h1>{matchEndData?.amIWinner?"You are winner":"You lost the game"}</h1>
+                            {matchEndData?.amIWinner &&
+                            <button className='basic_btn'>Get your winning price</button>                            
+                            }
+                </LoadingModel>
                 </>
                 :
                 <LoadingModel isOpen={!areBothPlayerConnected}>
@@ -148,6 +182,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                         <>
                             <h1>Connected with server</h1>
                             <h1>Waiting for opponent to join....</h1>
+                            <h1>{matchId}</h1>                            
                         </>
                         :
                         <h1>Connecting with server...</h1>

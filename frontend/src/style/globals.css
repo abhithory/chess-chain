@@ -3,8 +3,27 @@
 @tailwind utilities;
 
 
+*{
+  padding: 0;
+  margin: 0;
+}
+
+.body {
+  width: 100vw;
+  min-height: 100vh;
+  overflow:"hidden";
+}
+
+
 
 @layer base {
+  .bg_gradient{
+    @apply bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900
+  }
+
+  .page_section{
+    @apply h-full w-full
+  }
     .flex_center {
       @apply flex flex-col justify-center items-center;
     }

@@ -28,8 +28,9 @@ io.on('connection', socket => {
         socket.to(matchId).emit('connection-req-from-player', matchId, address);
     });
 
-    socket.on('connection-req-accepted', (matchId,address) => {
+    socket.on('connection-req-accepted', (matchId,address, connectionReqAccepted) => {
         socket.to(matchId).emit('connection-req-accepted', matchId, address);
+        connectionReqAccepted()
     });
 
     socket.on('chess-piece-moved', (matchId, moveData) => {
