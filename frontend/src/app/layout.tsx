@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className='body bg_gradient'>
         <ThirdWebProvider>
-          <main>
+          <main className='full-h-w'>
             <Navigation />
             {children}
           </main>

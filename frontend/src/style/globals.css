@@ -8,12 +8,16 @@
   margin: 0;
 }
 
-.body {
+.full-h-w {
   width: 100vw;
   min-height: 100vh;
   overflow:"hidden";
 }
 
+.wallet-connect-btn{
+  padding: 20px 40px !important;
+
+}
 
 
 @layer base {
@@ -22,7 +26,7 @@
   }
 
   .page_section{
-    @apply h-full w-full
+    @apply h-full w-full min-h-[90vh]
   }
     .flex_center {
       @apply flex flex-col justify-center items-center;
@@ -36,6 +40,10 @@
       @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
     }
 
+    .primary_gradient {
+      @apply bg-gradient-to-r from-amber-500 via-primary to-yellow-500 bg-clip-text text-transparent;
+    }
+
     .orange_gradient {
       @apply bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent;
     }
@@ -45,7 +53,7 @@
     }
     
     .blue_gradient {
-      @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
+      @apply bg-gradient-to-r from-third to-primary bg-clip-text text-transparent;
     }
     .glassmorphism-bg {
       @apply  shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
@@ -54,4 +62,13 @@
     .glassmorphism-box {
       @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
     }
+
+    .black_btn {
+      @apply rounded-full border border-black bg-black py-1.5 px-5 text-white transition-all hover:bg-white hover:text-black text-center text-sm  flex items-center justify-center;
+    }
+    
+    .outline_btn {
+      @apply rounded-full border border-black bg-transparent py-1.5 px-5 text-black transition-all hover:bg-black hover:text-white text-center text-sm flex items-center justify-center;
+    }
+    
   }
