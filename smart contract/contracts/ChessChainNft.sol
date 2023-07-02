@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 contract GameNFT is ERC721URIStorage, Ownable {
-  uint256 totalNftMinted;
+  uint256 public totalNftMinted;
   address public gamePlayContract;
     
 

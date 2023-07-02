@@ -5,15 +5,10 @@ pragma solidity ^0.8.9;
 // import "hardhat/console.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-interface ChessChainNftContract {
-    function mintNft(
-        address _matchWinner,
-        string memory tokenURI
-    ) external returns (uint256);
-}
-
-contract ChessChainGameplay is Ownable, ReentrancyGuard {
+contract ChessChainGameplay is Ownable, ReentrancyGuard, ERC721URIStorage {
     enum MatchResult {
         MATCH_CREATOR,
         MATCH_JOINER,
@@ -41,14 +36,23 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard {
     }
 
     mapping(string => Match) public matchOf;
-    ChessChainNftContract chessChainNftContract;
 
     uint256 public WinnerStakeAmountTimes = 2;
+    uint256 public totalNftMinted;
 
     // TODO: Events for match created, started, ended
 
-    constructor(ChessChainNftContract _chessChainNftContract) {
-        chessChainNftContract = _chessChainNftContract;
+    constructor() ERC721("ChessChainNFT", "CCN") {}
+
+    function mintNft(
+        address _matchWinner,
+        string memory tokenURI
+    ) internal returns (uint256) {
+        uint256 nftId = totalNftMinted + 1;
+        totalNftMinted++;
+        _mint(_matchWinner, nftId);
+        _setTokenURI(nftId, tokenURI);
+        return nftId;
     }
 
     function createMatch(
@@ -127,10 +131,7 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard {
         }
 
         if (winnerAddress != address(0)) {
-            uint256 _nftId = chessChainNftContract.mintNft(
-                winnerAddress,
-                matchNftURI
-            );
+            uint256 _nftId = mintNft(winnerAddress, matchNftURI);
 
             matchOf[matchId].nftId = _nftId;
 
@@ -147,11 +148,5 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard {
     ) private nonReentrant {
         (bool success, ) = address(_user).call{value: _amount}("");
         require(success, "sending money failed");
-    }
-
-    function changeNftContractAddress(
-        ChessChainNftContract _chessChainNftContract
-    ) public onlyOwner {
-        chessChainNftContract = _chessChainNftContract;
     }
 }
