@@ -162,7 +162,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                             <StyledChessBoard boardOrientation={boardOrientation}
                                 position={game.fen} onDrop={onDrop} />
                         </div>
-                        <div className="basis-5/12">
+                        <div className="basis-5/12 ">
                             <MovesHistroy movesHistory={gameHistroy} />
                         </div>
                     </div>
