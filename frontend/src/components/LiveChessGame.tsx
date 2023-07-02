@@ -4,11 +4,15 @@ import io from "socket.io-client";
 import * as ChessJS from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { ChessGameDetailsInterface } from '@/interface';
+import LoadingModel from './Model/LoadingModel';
 
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
+    const boardwidth = Math.round(window.innerWidth * 0.75);
+
+
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
 
     const [socket, setSocket] = useState<any>(null);
@@ -44,14 +48,14 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     function checkAndUpdateDetails() {
 
-        console.log("=================",game.turn(), "=================" );
-        
+        console.log("=================", game.turn(), "=================");
+
         // console.log(game.turn());
         setGameHistroy([...game.history()])
         // console.log(game.pgn({ max_width: 1 }));
-        
+
         // console.log("in_check", game.in_check());
-        
+
         // console.log("gameover",game.game_over());
         // // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
         // console.log("in_checkmate", game.in_checkmate());
@@ -66,7 +70,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     useEffect(() => {
         if (!socket) return
         socket.on("chess-piece-moved", (matchId: string, move: any) => {
-            console.log("chess-piece-moved",matchId,move);
+            console.log("chess-piece-moved", matchId, move);
             makeAMove(move)
         })
         return () => {
@@ -82,18 +86,18 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
         if (isMatchCreator) {
             console.log("2. it is a match creator. waiting for opponent request");
-            
+
             socket.on("connection-req-from-player", (_matchId: string, _opponentAddress: string) => {
                 console.log("3. request from opponed", _opponentAddress);
                 console.log(_matchId);
 
                 socket.emit("connection-req-accepted", matchId, _opponentAddress, setBothPlayerConnected);
             })
-        } else {            
+        } else {
             socket.emit("connection-req-from-player", matchId, myAddress);
             console.log("2. it is a match joiner. sent request to join match");
-            
-            socket.on("connection-req-accepted", (_matchId: string,_yourAddress: string) => {
+
+            socket.on("connection-req-accepted", (_matchId: string, _yourAddress: string) => {
                 console.log("3. connection-req-accepted", _matchId, _yourAddress);
                 setBothPlayerConnected()
             })
@@ -113,7 +117,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         _socket.on('connect', () => {
             _socket.emit("join-match", matchId, connectWithOpponent);
             console.log("1. joined match and connecting with opponent");
-            
+
             setSocket(_socket);
         });
 
@@ -124,18 +128,33 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
     return (
-        <div className="w-[30rem] flex">
+        <div className="w-full flex">
+            {areBothPlayerConnected ?
+                <>
+                    <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
+                        position={game.fen()} onPieceDrop={onDrop}
+                    />
+                    <div className="flex flex-col">
+                        {gameHistroy && gameHistroy.map((item, key) => {
+                            return (
+                                <span>{item}</span>
+                            )
+                        })}
+                    </div>
+                </>
+                :
+                <LoadingModel isOpen={!areBothPlayerConnected}>
+                    {socket ?
+                        <>
+                            <h1>Connected with server</h1>
+                            <h1>Waiting for opponent to join....</h1>
+                        </>
+                        :
+                        <h1>Connecting with server...</h1>
+                    }
+                </LoadingModel>
+            }
 
-            <Chessboard boardOrientation={boardOrientation}
-                position={game.fen()} onPieceDrop={onDrop}
-            />
-            <div className="flex flex-col">
-                {gameHistroy && gameHistroy.map((item, key) => {
-                    return (
-                        <span>{item}</span>
-                    )
-                })}
-            </div>
         </div>
     )
 }
