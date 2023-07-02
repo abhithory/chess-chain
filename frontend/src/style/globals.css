@@ -40,6 +40,10 @@
       @apply text-black bg-white hover:bg-gray-100 border-2 border-black rounded-lg text-lg px-6  py-2 text-center inline-flex items-center gap-2
     }
 
+    .basic_btn_3{
+      @apply px-5 py-2.5 font-medium bg-blue-50 hover:bg-pink-200 hover:text-primary/90 text-primary rounded-lg text-sm
+    }
+
     .basic_input {
       @apply bg-gray-800 border border-gray-300 text-gray-100 text-lg rounded-lg block w-full p-2.5 
     }

@@ -31,8 +31,10 @@ function CreateMatch() {
 
         if (response?.statusText === "OK") {
             router.push(`/match/${response?.data?.data?.matchId}`)
+        } else {
+
+            setMatchCreating(false);
         }
-        setMatchCreating(false);
     }
 
     return (

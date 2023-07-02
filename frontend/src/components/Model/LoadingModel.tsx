@@ -22,7 +22,7 @@ function LoadingModel({ children, isOpen }: any) {
         <div className="fixed inset-0 bg-black bg-opacity-25" />
       </Transition.Child>
 
-      <div className="fixed inset-0 overflow-y-auto glassmorphism-bg">
+      <div className="fixed inset-0 overflow-y-auto ">
         <div className="flex min-h-full items-center justify-center p-4 text-center">
           <Transition.Child
             as={Fragment}
@@ -33,7 +33,7 @@ function LoadingModel({ children, isOpen }: any) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-<Dialog.Panel className="w-full max-w-xl overflow-hidden py-12 shadow-xl transition-all  transform bg-white rounded-2xl">
+<Dialog.Panel className="w-full max-w-xl overflow-hidden py-12 shadow-xl transition-all  transform glassmorphism-box rounded-2xl">
 
                 {children}
             </Dialog.Panel>

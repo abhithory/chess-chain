@@ -18,7 +18,7 @@ function CopyButton({ text }: { text: string }) {
             {copied ? 
             <span className='flex items-center gap-2 text-primary'> <FaCopy /> Copied!</span>
                 :
-                <span className='flex items-center gap-2 text-secondary  cursor-pointer'><FaRegCopy />Copy</span>
+                <span className='flex items-center gap-2 text-text-color  cursor-pointer'><FaRegCopy />Copy</span>
             }
 
         </CopyToClipboard>

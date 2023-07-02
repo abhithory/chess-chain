@@ -8,6 +8,11 @@ import SimpleLoader from './loader/loader';
 import CopyButton from './Buttons/CopyButton';
 import StyledChessBoard from './ChessBoard/StyledChessBoard';
 import MovesHistroy from './ChessBoard/MovesHistroy';
+import LoadingPrimaryBtn from './Buttons/LoadingPrimaryBtn';
+
+import { useRouter } from 'next/navigation'
+
+
 
 
 
@@ -15,6 +20,7 @@ import MovesHistroy from './ChessBoard/MovesHistroy';
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
+    const router = useRouter();
 
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
 
@@ -33,6 +39,8 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         amIWinner: false
     });
 
+
+    const [transactionLoading, setTransactionLoading] = useState(false)
 
 
 
@@ -156,46 +164,52 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     return (
         <>
-            {areBothPlayerConnected ?
-                <div className=''>
-                    <div className='flex items-stretch gap-10'>
+            {areBothPlayerConnected &&
+                <div className='flex items-stretch gap-10'>
 
-                        <div className='basis-7/12 h-full'>
-                            <StyledChessBoard boardOrientation={boardOrientation}
-                                position={game.fen} onDrop={onDrop} />
-                        </div>
-                        <div className="basis-5/12 ">
-                            <MovesHistroy movesHistory={gameHistroy} />
-                        </div>
+                    <div className='basis-7/12 h-full'>
+                        <StyledChessBoard boardOrientation={boardOrientation}
+                            position={game.fen} onDrop={onDrop} />
                     </div>
-
-                    <LoadingModel isOpen={matchEndData?.matchOver}>
-                        <h1>{matchEndData?.amIWinner ? "You are winner" : "You lost the game"}</h1>
-                        {matchEndData?.amIWinner &&
-                            <button className='basic_btn'>Get your winning price</button>
-                        }
-                    </LoadingModel>
+                    <div className="basis-5/12 ">
+                        <MovesHistroy movesHistory={gameHistroy} />
+                    </div>
                 </div>
-                :
-                <LoadingModel isOpen={!areBothPlayerConnected}>
-                    {socket ?
-                        <>
-                            <h2 className='text-2xl'>Waiting for opponent to join</h2>
-                            <SimpleLoader className='w-12 my-4' />
-
-                            <div className="flex_center border border-black rounded-xl  py-4  mx-8">
-
-                                <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
-                                <h1>{matchId}</h1>
-                                <CopyButton text={matchId} />
-                            </div>
-                        </>
-                        :
-                        <h1>Connecting with server...</h1>
-                    }
-                </LoadingModel>
             }
 
+
+            <LoadingModel isOpen={matchEndData?.matchOver}>
+                <div className="flex_center gap-2 text-text-color">
+
+                    <h1 className='text-3xl mb-4 font-bold'>Match Over</h1>
+                    <h2 className='text-2xl  font-semibold'>{matchEndData?.amIWinner ? "You are winner" : "You lost the game"}</h2>
+                    {matchEndData?.amIWinner &&
+                        <>
+                            <LoadingPrimaryBtn text='Reedem Winning Price' loading={transactionLoading} onClick={() => setTransactionLoading(false)} disabled={transactionLoading} />
+                            <LoadingPrimaryBtn className='' text='Mint Match NFT' loading={transactionLoading} onClick={() => setTransactionLoading(false)} disabled={transactionLoading} />
+                        </>
+                    }
+                    <button className='basic_btn_3 mt-4' onClick={()=>router.push("/")}>Play Again</button>
+                </div>
+            </LoadingModel>
+
+            <LoadingModel isOpen={!areBothPlayerConnected}>
+                {socket ?
+                    <div className='text-text-color'>
+                        <h2 className='text-2xl'>Waiting for opponent to join</h2>
+                        <SimpleLoader className='w-12 my-4' />
+
+                        <div className="flex_center border border-black rounded-xl  py-4  mx-8">
+
+                            <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
+                            <h1>{matchId}</h1>
+                            <CopyButton text={matchId} />
+                        </div>
+                    </div>
+                    :
+                    <h1>Connecting with server...</h1>
+                }
+            </LoadingModel>
         </>
     )
 }

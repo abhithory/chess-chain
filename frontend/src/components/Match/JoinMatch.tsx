@@ -46,6 +46,7 @@ function JoinMatch() {
             const data = response.data.data
             setStackedAmount(Number(data.stackedAmount));
             setMatchDetails(data)
+        }else {
             setLoadingMatchData(false);
         }
     }
