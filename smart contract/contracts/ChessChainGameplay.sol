@@ -6,9 +6,10 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract ChessChainGameplay is Ownable, ReentrancyGuard, ERC721URIStorage {
+contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage, ERC721Enumerable {
     enum MatchResult {
         MATCH_CREATOR,
         MATCH_JOINER,
@@ -46,12 +47,12 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard, ERC721URIStorage {
 
     function mintNft(
         address _matchWinner,
-        string memory tokenURI
+        string memory _tokenURI
     ) private returns (uint256) {
         totalNftMinted++;
         uint256 nftId = totalNftMinted;
         _mint(_matchWinner, nftId);
-        _setTokenURI(nftId, tokenURI);
+        _setTokenURI(nftId, _tokenURI);
         return nftId;
     }
 
@@ -148,5 +149,36 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard, ERC721URIStorage {
     ) private nonReentrant {
         (bool success, ) = address(_user).call{value: _amount}("");
         require(success, "sending money failed");
+    }
+
+
+    // The following functions are overrides required by Solidity.
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721Enumerable, ERC721URIStorage)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
