@@ -33,8 +33,8 @@ function LoadingModel({ children, isOpen }: any) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-              {children}
+<Dialog.Panel className="w-full max-w-xl overflow-hidden py-12 shadow-xl transition-all  transform bg-white rounded-2xl">
+                {children}
             </Dialog.Panel>
           </Transition.Child>
         </div>
