@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useAddress } from "@thirdweb-dev/react";
 import LiveChessGame from '@/components/LiveChessGame';
 import { ChessGameDetailsInterface } from '@/interface';
+import SimpleLoader from '@/components/loader/loader';
 
 
 
@@ -38,10 +39,13 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
         loadMatchData();
     }, [address])
 
-    return (loadingMatchData ?
-        <h1>Loading match Details</h1>
-        :
-        <LiveChessGame chessGameDetails={chessGameDetails} />
+    return (
+        <section className="w-screen h-screen overflow-hidden flex_center">
+            {loadingMatchData ?
+                <SimpleLoader className='w-20' />
+                :
+                <LiveChessGame chessGameDetails={chessGameDetails} />}
+        </section>
     )
 }
 

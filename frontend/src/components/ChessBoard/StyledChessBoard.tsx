@@ -9,7 +9,7 @@ function StyledChessBoard({ position, boardOrientation, onDrop }: any) {
 
     return (
         <div className='flex_center '>
-            <div className="glassmorphism-bg rounded-xl">
+            <div className="glassmorphism-chessboard-bg ">
             <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
                 position={position()} onPieceDrop={onDrop}
                 />

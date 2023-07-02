@@ -151,9 +151,11 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         };
     }, [setSocket]);
 
+    const boardwidth = Math.round((Math.min(window.innerWidth, window.innerHeight) * 0.80));
+
 
     return (
-        <section className="w-screen h-screen overflow-hidden flex_center">
+        <>
             {areBothPlayerConnected ?
                 <div className=''>
                     <div className='flex items-stretch gap-10'>
@@ -194,7 +196,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                 </LoadingModel>
             }
 
-        </section>
+        </>
     )
 }
 
