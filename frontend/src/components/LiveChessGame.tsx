@@ -5,11 +5,16 @@ import * as ChessJS from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { ChessGameDetailsInterface } from '@/interface';
 import LoadingModel from './Model/LoadingModel';
+import SimpleLoader from './loader/loader';
+import CopyButton from './Buttons/CopyButton';
+
+
 
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
+
     const boardwidth = Math.round(window.innerWidth * 0.75);
 
 
@@ -22,15 +27,15 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     const [gameHistroy, setGameHistroy] = useState<string[]>([]);
 
     const [areBothPlayerConnected, setAreBothPlayerConnected] = useState(false);
-    
+
     const [isCheck, setIsCheck] = useState(false);
-    
+
     const [matchEndData, setMatchEndData] = useState<any>({
-        matchOver:false,
-                amIWinner:false
+        matchOver: false,
+        amIWinner: false
     });
 
-    
+
 
 
     function makeAMove(move: { from: any; to: any; promotion: any; }) {
@@ -61,10 +66,10 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         setIsCheck(game.in_check())
 
 
-        if(game.game_over()){
+        if (game.game_over()) {
             setMatchEndData({
-                matchOver:true,
-                amIWinner:game.turn() !== boardOrientation[0]
+                matchOver: true,
+                amIWinner: game.turn() !== boardOrientation[0]
             })
         }
 
@@ -153,14 +158,14 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         <div className="w-full flex">
             {areBothPlayerConnected ?
                 <>
-                <div>
-                    <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
-                        position={game.fen()} onPieceDrop={onDrop}
-                    />
-                    {isCheck&&
-                    <h1>Check</h1>
-                    }
-                </div>
+                    <div>
+                        <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
+                            position={game.fen()} onPieceDrop={onDrop}
+                        />
+                        {isCheck &&
+                            <h1>Check</h1>
+                        }
+                    </div>
                     <div className="flex flex-col">
                         {gameHistroy && gameHistroy.map((item, key) => {
                             return (
@@ -169,21 +174,27 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                         })}
                     </div>
 
-                <LoadingModel isOpen={matchEndData?.matchOver}>
-                            <h1>{matchEndData?.amIWinner?"You are winner":"You lost the game"}</h1>
-                            {matchEndData?.amIWinner &&
-                            <button className='basic_btn'>Get your winning price</button>                            
-                            }
-                </LoadingModel>
+                    <LoadingModel isOpen={matchEndData?.matchOver}>
+                        <h1>{matchEndData?.amIWinner ? "You are winner" : "You lost the game"}</h1>
+                        {matchEndData?.amIWinner &&
+                            <button className='basic_btn'>Get your winning price</button>
+                        }
+                    </LoadingModel>
                 </>
                 :
                 <LoadingModel isOpen={!areBothPlayerConnected}>
                     {socket ?
-                        <>
-                            <h1>Connected with server</h1>
-                            <h1>Waiting for opponent to join....</h1>
-                            <h1>{matchId}</h1>                            
-                        </>
+                    <>
+                            <h2 className='text-2xl'>Waiting for opponent to join</h2>
+                            <SimpleLoader className='w-12 my-4' />
+
+                        <div className="flex_center border border-black rounded-xl  py-4  mx-8">
+
+                            <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
+                            <h1>{matchId}</h1>
+                            <CopyButton text={matchId} />
+                        </div>
+                    </>
                         :
                         <h1>Connecting with server...</h1>
                     }

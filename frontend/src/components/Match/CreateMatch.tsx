@@ -10,6 +10,7 @@ import { FaChessQueen } from 'react-icons/fa'
 
 import PopUpModel from "@/components/Model/PopUpModel";
 import StyleButton1 from '../Buttons/StyleButton1';
+import LoadingPrimaryBtn from '../Buttons/LoadingPrimaryBtn';
 
 
 function CreateMatch() {
@@ -54,8 +55,10 @@ function CreateMatch() {
             <PopUpModel isOpen={isModelOpen} closeModal={() => setIsModelOpen(false)}>
                 <div className="flex_center ">
                     <h1 className="text-4xl text-text-color font-bold mb-12">Create Match</h1>
-                    <input className='basic_input' type="number" onChange={(e) => setStackedAmount(Number(e.target.value))} placeholder="how much do you want to stake" />
-                    <button className='basic_btn_2 mt-2' disabled={matchCreating} onClick={createMatch}>Create Match</button>
+                    <input className='basic_input' type="number" value={stackedAmount} onChange={(e) => setStackedAmount(Number(e.target.value))} placeholder="How much FTM do you want to stake?" />
+                    <LoadingPrimaryBtn className='basic_btn_2 my-2' text='Create Match' loading={matchCreating} onClick={createMatch} disabled={matchCreating}  />
+                    <h3 className="text-md text-text-color">Winner will get: {2*stackedAmount} FTM</h3>
+
                 </div>
             </PopUpModel>
 

@@ -10,6 +10,7 @@ import { useAddress } from "@thirdweb-dev/react";
 
 import PopUpModel from "@/components/Model/PopUpModel";
 import { FaChessKing } from 'react-icons/fa';
+import LoadingPrimaryBtn from '../Buttons/LoadingPrimaryBtn';
 
 
 function JoinMatch() {
@@ -61,6 +62,7 @@ function JoinMatch() {
                     <h1 className="text-4xl text-text-color font-bold mb-12">Join Match</h1>
                     <input className='basic_input' type="text" onChange={(e) => setMatchId(e.target.value)} placeholder="enter game id" />
 
+
                     {matchDetails ?
                     <>
                         <div className='flex_center text-white gap-2'>
@@ -69,13 +71,14 @@ function JoinMatch() {
                                 <h3 className="text-lg">Match Details</h3>
                             <h4 >Opponent Address: {matchDetails.matchCreatorAddress}</h4>
                             <h4>Stake Amount: {matchDetails.stackedAmount} FTM</h4>
-                            <h4>Winner Amount: {1.95*matchDetails.stackedAmount} FTM</h4>
+                            <h4>Winner Amount: {2*matchDetails.stackedAmount} FTM</h4>
                             </div>
-                            <button className='basic_btn' disabled={matchJoining} onClick={joinMatch}>Join Match</button>
+                            <LoadingPrimaryBtn text='Join Match' loading={matchJoining} onClick={joinMatch} disabled={matchJoining}  />
                         </div>
                     </>
                         :
-                        <button className='basic_btn mt-2' disabled={loadingMatchData} onClick={loadMatchDetails}>Load Match Details</button>
+                        <LoadingPrimaryBtn className='mt-2' text='Load Match Details' loading={matchJoining} onClick={loadMatchDetails} disabled={matchJoining}  />
+
 
                     }
                 </div>
