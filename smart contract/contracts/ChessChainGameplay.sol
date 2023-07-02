@@ -47,9 +47,9 @@ contract ChessChainGameplay is Ownable, ReentrancyGuard, ERC721URIStorage {
     function mintNft(
         address _matchWinner,
         string memory tokenURI
-    ) internal returns (uint256) {
-        uint256 nftId = totalNftMinted + 1;
+    ) private returns (uint256) {
         totalNftMinted++;
+        uint256 nftId = totalNftMinted;
         _mint(_matchWinner, nftId);
         _setTokenURI(nftId, tokenURI);
         return nftId;
