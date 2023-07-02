@@ -3,6 +3,8 @@ pragma solidity ^0.8.9;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -13,7 +15,7 @@ interface ChessChainNftContract {
     ) external returns (uint256);
 }
 
-contract ChessChainGameplay is Ownable {
+contract ChessChainGameplay is Ownable,ReentrancyGuard {
     enum MatchResult {
         MATCH_CREATOR,
         MATCH_JOINER,
@@ -38,8 +40,11 @@ contract ChessChainGameplay is Ownable {
         uint256 startTime;
         uint256 endTime;
     }
+
     mapping(string => Match) public matchOf;
     ChessChainNftContract chessChainNftContract;
+
+    uint256 public WinnerStakeAmountTimes = 2;
 
 
     // TODO: Events for match created, started, ended
@@ -88,6 +93,7 @@ contract ChessChainGameplay is Ownable {
     // TODO: connect with external api to check the game result || chainlink
     function endMatch(
         string memory matchId,
+        string memory matchNftURI,
         string memory matchDataURI,
         MatchResult gameResult
     ) external payable {
@@ -105,7 +111,29 @@ contract ChessChainGameplay is Ownable {
         matchOf[matchId].gameResult = gameResult;
         matchOf[matchId].matchDataURI = matchDataURI;
         matchOf[matchId].endTime = block.timestamp;
+
+        address winnerAddress = address(0);
+
+        if (gameResult == MatchResult.DRAW) {
+            transferAmount(matchOf[matchId].matchCreator, matchOf[matchId].stakeAmount);
+            transferAmount(matchOf[matchId].matchJoiner, matchOf[matchId].stakeAmount);
+        } else if (gameResult == MatchResult.MATCH_CREATOR){
+        winnerAddress = matchOf[matchId].matchCreator;
+            
+        } else if (gameResult == MatchResult.MATCH_JOINER){
+        winnerAddress = matchOf[matchId].matchJoiner;
+        }
+
+        if(winnerAddress != address(0)){
+        chessChainNftContract.mintNft(winnerAddress, matchNftURI);
+            transferAmount(winnerAddress, WinnerStakeAmountTimes*matchOf[matchId].stakeAmount);
+        }
     }
+
+      function transferAmount(address _user, uint256 _amount) private nonReentrant {
+    (bool success, ) = address(_user).call{value: _amount}("");
+    require(success, "sending money failed");
+  }
 
     function changeNftContractAddress(ChessChainNftContract _chessChainNftContract) public onlyOwner {
         chessChainNftContract = _chessChainNftContract;   
