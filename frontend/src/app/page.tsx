@@ -25,10 +25,10 @@ export default function Home() {
         <p className='w-[80%] text-center text-lg mb-8'>Play chess like never before in a blockchain-powered game. Stake tokens, battle global opponents, and have each Match immortalized as an NFT. Collect, trade, and showcase your unique moves. </p>
 
         {address ?
-        <>
+        <div className='flex flex-col gap-4 '>
             <CreateMatch />
             <JoinMatch />
-        </>
+        </div>
           :
           <>
             <ConnectWallet btnTitle="Connect Wallet To Play" theme="dark" className='px-8 py-4 text-lg'/>

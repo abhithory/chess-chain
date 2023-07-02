@@ -18,8 +18,8 @@ function PopUpModel({ children, isOpen, closeModal }: any) {
         <div className="fixed inset-0 bg-black bg-opacity-25" />
       </Transition.Child>
 
-      <div className="fixed inset-0 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4 text-center">
+      <div className="fixed inset-0 overflow-y-auto ">
+        <div className="flex min-h-full items-center justify-center p-4 text-center ">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -29,7 +29,7 @@ function PopUpModel({ children, isOpen, closeModal }: any) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+            <Dialog.Panel className="w-full max-w-xl overflow-hidden py-12 shadow-xl transition-all  transform glassmorphism-box">
               {children}
             </Dialog.Panel>
           </Transition.Child>

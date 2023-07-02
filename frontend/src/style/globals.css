@@ -33,15 +33,23 @@
     }
 
     .basic_btn {
-      @apply text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900;
+      @apply text-black bg-white hover:bg-gray-100 border border-gray-200 rounded-lg text-xl px-8  py-3 text-center inline-flex items-center gap-2
+    }
+
+    .basic_btn_2 {
+      @apply text-black bg-white hover:bg-gray-100 border-2 border-black rounded-lg text-lg px-6  py-2 text-center inline-flex items-center gap-2
     }
 
     .basic_input {
-      @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+      @apply bg-gray-800 border border-gray-300 text-gray-100 text-lg rounded-lg block w-full p-2.5 
     }
 
     .primary_gradient {
       @apply bg-gradient-to-r from-amber-500 via-primary to-yellow-500 bg-clip-text text-transparent;
+    }
+
+    .secondary_gradient {
+      @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
     }
 
     .orange_gradient {

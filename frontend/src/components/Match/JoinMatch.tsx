@@ -9,6 +9,7 @@ import { useAddress } from "@thirdweb-dev/react";
 
 
 import PopUpModel from "@/components/Model/PopUpModel";
+import { FaChessKing } from 'react-icons/fa';
 
 
 function JoinMatch() {
@@ -52,7 +53,8 @@ function JoinMatch() {
     return (
         <>
 
-            <button className='basic_btn' onClick={() => setIsModelOpen(true)}>Join Match</button>
+            <button className='basic_btn' onClick={() => setIsModelOpen(true)}>
+                <FaChessKing /> Join Match</button>
 
             <PopUpModel isOpen={isModelOpen} closeModal={() => setIsModelOpen(false)}>
                 <div className="pt-8 px-2">
