@@ -25,10 +25,11 @@ export const createMatchApiCall = async (matchCreatorAddress: string, stackedAmo
 }
 
 
-export const joinMatchApiCall = async (matchCreatorAddress: string ) => {
+export const joinMatchApiCall = async (matchId:string,matchJoinerAddress: string ) => {
     try {
         const response: AxiosResponse<MatchDataResponse> = await axios.patch(`${apiBaseUrl}/match/joinmatch`,{
-            matchCreatorAddress
+            matchId,
+            matchJoinerAddress
         });
         return response
     } catch (error) {

@@ -18,7 +18,7 @@ function JoinMatch() {
     const [matchId, setMatchId] = useState("");
     const [stackedAmount, setStackedAmount] = useState(0);
     const [matchJoining, setMatchJoining] = useState(false);
-    const [loadingMatchData, setLoadingMatchData] = useState(true);
+    const [loadingMatchData, setLoadingMatchData] = useState(false);
 
 
     const [matchDetails, setMatchDetails] = useState<MatchData>();
@@ -28,7 +28,7 @@ function JoinMatch() {
     async function joinMatch() {
         if (!address) return
         setMatchJoining(true);
-        const response: AxiosResponse<MatchDataResponse> | undefined = await joinMatchApiCall(address);
+        const response: AxiosResponse<MatchDataResponse> | undefined = await joinMatchApiCall(matchId,address);
         if (response?.statusText === "OK") {
             router.push(`/match/${response?.data?.data?.matchId}`)
         }
@@ -56,7 +56,7 @@ function JoinMatch() {
 
             <PopUpModel isOpen={isModelOpen} closeModal={() => setIsModelOpen(false)}>
                 <div className="pt-8 px-2">
-                    <input className='basic_input' type="number" onChange={(e) => setMatchId(e.target.value)} placeholder="enter game id" />
+                    <input className='basic_input' type="text" onChange={(e) => setMatchId(e.target.value)} placeholder="enter game id" />
                     <button className='basic_btn' disabled={loadingMatchData} onClick={loadMatchDetails}>load Match</button>
 
                     {matchDetails &&

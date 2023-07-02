@@ -30,6 +30,9 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/chess.js": "^0.13.4"
+    "@types/chess.js": "^0.13.4",
+    "encoding": "^0.1.13",
+    "lokijs": "^1.5.12",
+    "pino-pretty": "^10.0.0"
   }
 }

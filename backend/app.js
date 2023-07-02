@@ -24,18 +24,21 @@ const io = socketIO(appServer, {
     },
 });
 io.on('connection', socket => {
-    socket.on('connect-with-player', (from,to,connectedToRoom) => {
-        socket.to(to).emit('connection-req-from-player', from);
-        connectedToRoom()
+    socket.on('connection-req-from-player', (matchId,address) => {
+        socket.to(matchId).emit('connection-req-from-player', matchId, address);
     });
 
-
-    socket.on('move-chess-piece', (opponentId, moveData) => {
-        socket.to(opponentId).emit('chess-piece-moved', moveData);
+    socket.on('connection-req-accepted', (matchId,address) => {
+        socket.to(matchId).emit('connection-req-accepted', matchId, address);
     });
 
-    socket.on('join-game-room', (roomId)=>{
-        socket.join(roomId);
+    socket.on('chess-piece-moved', (matchId, moveData) => {
+        socket.to(matchId).emit('chess-piece-moved',matchId, moveData);
+    });
+
+    socket.on('join-match', (matchId, connectWithOpponent)=>{
+        socket.join(matchId);
+        connectWithOpponent()
     })
 
     //   socket.on('disconnect', () => {

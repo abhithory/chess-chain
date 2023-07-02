@@ -37,7 +37,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         const move = makeAMove(userMove);
 
         if (move === null) return false;
-        socket.emit("move-chess-piece", matchId, userMove)
+        socket.emit("chess-piece-moved", matchId, userMove)
         return true;
     }
 
@@ -48,16 +48,16 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         
         // console.log(game.turn());
         setGameHistroy([...game.history()])
-        console.log(game.pgn({ max_width: 1 }));
+        // console.log(game.pgn({ max_width: 1 }));
         
-        console.log("in_check", game.in_check());
+        // console.log("in_check", game.in_check());
         
-        console.log("gameover",game.game_over());
-        // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
-        console.log("in_checkmate", game.in_checkmate());
-        console.log("in_stalemate", game.in_stalemate());
-        console.log("in_draw", game.in_draw());
-        console.log("=================");
+        // console.log("gameover",game.game_over());
+        // // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
+        // console.log("in_checkmate", game.in_checkmate());
+        // console.log("in_stalemate", game.in_stalemate());
+        // console.log("in_draw", game.in_draw());
+        // console.log("=================");
     }
     useEffect(() => {
         checkAndUpdateDetails();
@@ -66,6 +66,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     useEffect(() => {
         if (!socket) return
         socket.on("chess-piece-moved", (matchId: string, move: any) => {
+            console.log("chess-piece-moved",matchId,move);
             makeAMove(move)
         })
         return () => {
@@ -75,22 +76,30 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     function setBothPlayerConnected() {
         setAreBothPlayerConnected(true)
+        console.log("4. reqest accepted. both player connected");
     }
     function connectWithOpponent() {
+
         if (isMatchCreator) {
+            console.log("2. it is a match creator. waiting for opponent request");
+            
             socket.on("connection-req-from-player", (_matchId: string, _opponentAddress: string) => {
-                console.log("request from opponed", _opponentAddress);
+                console.log("3. request from opponed", _opponentAddress);
+                console.log(_matchId);
+
                 socket.emit("connection-req-accepted", matchId, _opponentAddress, setBothPlayerConnected);
             })
-        } else {
+        } else {            
             socket.emit("connection-req-from-player", matchId, myAddress);
-            socket.on("connection-req-accepted", (_matchId: string) => {
-                console.log("connection-req-accepted", _matchId);
+            console.log("2. it is a match joiner. sent request to join match");
+            
+            socket.on("connection-req-accepted", (_matchId: string,_yourAddress: string) => {
+                console.log("3. connection-req-accepted", _matchId, _yourAddress);
                 setBothPlayerConnected()
             })
         }
         return () => {
-            socket.off('connection-req-opponent-player')
+            socket.off('connection-req-from-player')
             socket.off('connection-req-accepted')
         }
     }
@@ -103,6 +112,8 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         const _socket = io(socketURI);
         _socket.on('connect', () => {
             _socket.emit("join-match", matchId, connectWithOpponent);
+            console.log("1. joined match and connecting with opponent");
+            
             setSocket(_socket);
         });
 

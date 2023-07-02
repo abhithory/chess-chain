@@ -15,6 +15,7 @@ matchRouter
 matchRouter
     .route("/joinmatch")
     .patch(joinMatch);
+    
 matchRouter
     .route("/setmatchwinner")
     .patch(setMatchWinner);
