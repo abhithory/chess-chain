@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import io from "socket.io-client";
 import * as ChessJS from "chess.js";
-import { Chessboard } from "react-chessboard";
 import { ChessGameDetailsInterface } from '@/interface';
 import LoadingModel from './Model/LoadingModel';
 import SimpleLoader from './loader/loader';
 import CopyButton from './Buttons/CopyButton';
+import StyledChessBoard from './ChessBoard/StyledChessBoard';
+import MovesHistroy from './ChessBoard/MovesHistroy';
 
 
 
@@ -14,9 +15,6 @@ import CopyButton from './Buttons/CopyButton';
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
-
-    const boardwidth = Math.round(window.innerWidth * 0.75);
-
 
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
 
@@ -155,23 +153,18 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
     return (
-        <div className="w-full flex">
+        <section className="w-screen h-screen overflow-hidden flex_center">
             {areBothPlayerConnected ?
-                <>
-                    <div>
-                        <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
-                            position={game.fen()} onPieceDrop={onDrop}
-                        />
-                        {isCheck &&
-                            <h1>Check</h1>
-                        }
-                    </div>
-                    <div className="flex flex-col">
-                        {gameHistroy && gameHistroy.map((item, key) => {
-                            return (
-                                <span key={key}>{item}</span>
-                            )
-                        })}
+                <div className=''>
+                    <div className='flex items-stretch gap-10'>
+
+                        <div className='basis-7/12 h-full'>
+                            <StyledChessBoard boardOrientation={boardOrientation}
+                                position={game.fen} onDrop={onDrop} />
+                        </div>
+                        <div className="basis-5/12">
+                            <MovesHistroy movesHistory={gameHistroy} />
+                        </div>
                     </div>
 
                     <LoadingModel isOpen={matchEndData?.matchOver}>
@@ -180,28 +173,28 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                             <button className='basic_btn'>Get your winning price</button>
                         }
                     </LoadingModel>
-                </>
+                </div>
                 :
                 <LoadingModel isOpen={!areBothPlayerConnected}>
                     {socket ?
-                    <>
+                        <>
                             <h2 className='text-2xl'>Waiting for opponent to join</h2>
                             <SimpleLoader className='w-12 my-4' />
 
-                        <div className="flex_center border border-black rounded-xl  py-4  mx-8">
+                            <div className="flex_center border border-black rounded-xl  py-4  mx-8">
 
-                            <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
-                            <h1>{matchId}</h1>
-                            <CopyButton text={matchId} />
-                        </div>
-                    </>
+                                <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
+                                <h1>{matchId}</h1>
+                                <CopyButton text={matchId} />
+                            </div>
+                        </>
                         :
                         <h1>Connecting with server...</h1>
                     }
                 </LoadingModel>
             }
 
-        </div>
+        </section>
     )
 }
 

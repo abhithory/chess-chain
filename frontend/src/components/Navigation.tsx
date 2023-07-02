@@ -4,8 +4,15 @@ import React from 'react'
 import { ConnectWallet } from "@thirdweb-dev/react";
 import Image from 'next/image'
 
+import { usePathname } from 'next/navigation';
+
 
 function Navigation() {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/match/")) {
+    return 
+  }
   return (
     <div className="glassmorphism-bg bg-secondary/30 w-full flex justify-between px-20 py-4">
     <span className="flex items-center justify-center gap-4">
