@@ -4,7 +4,16 @@ pragma solidity ^0.8.9;
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract ChessChainGameplay {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+interface ChessChainNftContract {
+    function mintNft(
+        address _matchWinner,
+        string memory tokenURI
+    ) external returns (uint256);
+}
+
+contract ChessChainGameplay is Ownable {
     enum MatchResult {
         MATCH_CREATOR,
         MATCH_JOINER,
@@ -29,8 +38,16 @@ contract ChessChainGameplay {
         uint256 startTime;
         uint256 endTime;
     }
-
     mapping(string => Match) public matchOf;
+    ChessChainNftContract chessChainNftContract;
+
+
+    // TODO: Events for match created, started, ended
+
+
+    constructor (ChessChainNftContract _chessChainNftContract)  {
+        chessChainNftContract = _chessChainNftContract;
+    }
 
     function createMatch(
         string memory matchId,
@@ -88,5 +105,9 @@ contract ChessChainGameplay {
         matchOf[matchId].gameResult = gameResult;
         matchOf[matchId].matchDataURI = matchDataURI;
         matchOf[matchId].endTime = block.timestamp;
+    }
+
+    function changeNftContractAddress(ChessChainNftContract _chessChainNftContract) public onlyOwner {
+        chessChainNftContract = _chessChainNftContract;   
     }
 }
