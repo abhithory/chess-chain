@@ -55,7 +55,13 @@ contract ChessChainGameplay is
     );
 
     event MatchStarted(string indexed matchId, address indexed mathJoiner);
-    event MatchEnded(string indexed matchId, address indexed matchCreator, address indexed matchJoiner,MatchResult gameResult, string matchDataURI);
+    event MatchEnded(
+        string indexed matchId,
+        address indexed matchCreator,
+        address indexed matchJoiner,
+        MatchResult gameResult,
+        string matchDataURI
+    );
 
     constructor() ERC721("ChessChainNFT", "CCN") {}
 
@@ -91,7 +97,8 @@ contract ChessChainGameplay is
     }
 
     function joinMatch(string memory matchId, address matchJoiner)
-        external payable
+        external
+        payable
     {
         require(
             matchDetailOf[matchId].matchStatus == MatchStatus.CREATED,
@@ -106,7 +113,6 @@ contract ChessChainGameplay is
         matchDetailOf[matchId].matchJoiner = matchJoiner;
         matchDetailOf[matchId].startTime = block.timestamp;
         emit MatchStarted(matchId, matchJoiner);
-
     }
 
     // TODO: connect with external api to check the game result || chainlink
@@ -159,9 +165,14 @@ contract ChessChainGameplay is
             );
         }
 
-        emit MatchEnded(matchId, matchDetailOf[matchId].matchCreator, matchDetailOf[matchId].matchJoiner, gameResult, matchDataURI);
+        emit MatchEnded(
+            matchId,
+            matchDetailOf[matchId].matchCreator,
+            matchDetailOf[matchId].matchJoiner,
+            gameResult,
+            matchDataURI
+        );
     }
-
 
     function transferAmount(address _user, uint256 _amount)
         private
@@ -169,6 +180,33 @@ contract ChessChainGameplay is
     {
         (bool success, ) = address(_user).call{value: _amount}("");
         require(success, "sending money failed");
+    }
+
+    // for profile
+    function walletOfOwner(address _owner)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        uint256[] memory tokenIds = new uint256[](ownerTokenCount);
+        for (uint256 i; i < ownerTokenCount; i++) {
+            tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
+        }
+        return tokenIds;
+    }
+
+    function walletOfOwnerURIs(address _owner)
+        public
+        view
+        returns (string[] memory)
+    {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        string[] memory tokenUris = new string[](ownerTokenCount);
+        for (uint256 i; i < ownerTokenCount; i++) {
+            tokenUris[i] = tokenURI(tokenOfOwnerByIndex(_owner, i));
+        }
+        return tokenUris;
     }
 
     // The following functions are overrides required by Solidity for nft contract.
