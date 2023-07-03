@@ -24,6 +24,12 @@ const matchSchema = new mongoose.Schema({
         type: String,
         default:""
     },
+
+    matchResultStatus: {
+        type: String,
+        default:"NOT",
+        enum: { values: ['NOT', 'WON', 'DRAW'], message: 'Result can only be NOT, WON ,DRAW' }
+    },
     rewardClaimed: {
         type: Boolean,
         default: false

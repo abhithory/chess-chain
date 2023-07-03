@@ -44,9 +44,10 @@ exports.joinMatch = catchAsync(async (req, res, next) => {
 })
 
 exports.setMatchWinner = catchAsync(async (req, res, next) => {
-    const { matchId, matchWinnerAddress } = req.body;
+    const { matchId, matchWinnerAddress,matchResultStatus } = req.body;
     const match = await Match.findOneAndUpdate({matchId}, {
-        matchWinnerAddress
+        matchWinnerAddress,
+        matchResultStatus
     });
     if (!match) {
         return next(new AppError("No Match found with that ID", 404));

@@ -1,4 +1,4 @@
-import { MatchDataResponse } from '@/interface/matchInterface';
+import { MatchDataResponse, MatchResultStausEnum } from '@/interface/matchInterface';
 import axios, { AxiosResponse } from 'axios';
 
 export const apiBaseUrl = "http://localhost:3001/api/v1"
@@ -34,5 +34,30 @@ export const joinMatchApiCall = async (matchId:string,matchJoinerAddress: string
         return response
     } catch (error) {
         console.log("createMatchApiCall",error);
+    }
+}
+
+export const setMatchWinnerApiCall = async (matchId:string,matchWinnerAddress: string,matchResultStatus: MatchResultStausEnum) => {
+    try {
+        const response: AxiosResponse<MatchDataResponse> = await axios.patch(`${apiBaseUrl}/match/setmatchwinner`,{
+            matchId,
+            matchWinnerAddress,
+            matchResultStatus
+        });
+        return response
+    } catch (error) {
+        console.log("setmatchwinner",error);
+    }
+}
+
+
+export const setRewardClaimedApiCall = async (matchId:string) => {
+    try {
+        const response: AxiosResponse<MatchDataResponse> = await axios.patch(`${apiBaseUrl}/match/rewardClaimed`,{
+            matchId
+        });
+        return response
+    } catch (error) {
+        console.log("setRewardClaimedApiCall",error);
     }
 }

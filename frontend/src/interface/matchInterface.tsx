@@ -1,5 +1,12 @@
 import { MatchResultEnum } from "@/smartContract/networkDetails";
 
+
+export enum MatchResultStausEnum{
+  "NOT",
+  "WON",
+  "DAWN"
+}
+
 export interface MatchDataResponse {
   data: MatchData,
   sucess: boolean
