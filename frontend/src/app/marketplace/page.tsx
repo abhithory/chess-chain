@@ -26,7 +26,7 @@ export default function Home() {
         </div>
           :
           <>
-            <ConnectWallet btnTitle="Connect Wallet To Play" theme="dark" className='px-8 py-4 text-lg'/>
+            <ConnectWallet btnTitle="Connect Wallet To use marketplace" theme="dark" className='px-8 py-4 text-lg'/>
           </>
         }
       </div>

@@ -7,19 +7,30 @@ export enum MatchResultStausEnum{
   "DRAW"="DRAW"
 }
 
+export interface MatchsDataResponse {
+  data: MatchData[],
+  sucess: boolean
+}
+
 export interface MatchDataResponse {
   data: MatchData,
   sucess: boolean
 }
 
+
+
 export interface MatchData {
-    matchId: string;
-    matchCreatorAddress: string;
-    stackedAmount: number;
-    matchJoinerAddress: string;
-    matchWinnerAddress: string;
-    createdAt: Date;
-  }
+  matchId: string;
+  matchCreatorAddress: string;
+  stackedAmount: number;
+  matchJoinerAddress: string;
+  matchWinnerAddress: string;
+  matchResultStatus: MatchResultStausEnum;
+  rewardClaimed: boolean;
+  createdAt: Date;
+}
+
+
 
   export interface MatchEndData {
     matchOver: boolean;

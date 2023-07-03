@@ -1,4 +1,4 @@
-import { MatchDataResponse, MatchResultStausEnum } from '@/interface/matchInterface';
+import { MatchDataResponse, MatchResultStausEnum, MatchsDataResponse } from '@/interface/matchInterface';
 import axios, { AxiosResponse } from 'axios';
 
 export const apiBaseUrl = "http://localhost:3001/api/v1"
@@ -11,6 +11,16 @@ export const getMatchDetailsApiCall = async (matchId:string) => {
         console.log("createMatchApiCall",error);
     }
 }
+
+export const getMatchsByUserAddressApiCall = async (userAddress: string) => {
+    try {
+        const response: AxiosResponse<MatchsDataResponse> = await axios.get(`${apiBaseUrl}/match/usermatchs/${userAddress}`);
+        return response
+    } catch (error) {
+        console.log("createMatchApiCall",error);
+    }
+}
+
 
 export const createMatchApiCall = async (matchCreatorAddress: string, stackedAmount:number ) => {
     try {

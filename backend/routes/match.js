@@ -1,5 +1,5 @@
 const express = require("express");
-const { createMatch, getMatchById, joinMatch, setMatchWinner, rewardClaimed } = require("../controller/matchController");
+const { createMatch, getMatchById, joinMatch, setMatchWinner, rewardClaimed, getMatchsByUserAddress } = require("../controller/matchController");
 
 const matchRouter = express.Router();
 
@@ -8,6 +8,10 @@ matchRouter
     .route("/create")
     .post(createMatch);
 
+matchRouter
+    .route("/usermatchs/:userAddress")
+    .get(getMatchsByUserAddress);
+    
 matchRouter
     .route("/:matchId")
     .get(getMatchById);

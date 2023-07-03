@@ -31,6 +31,19 @@ exports.getMatchById = catchAsync(async (req, res, next) => {
     return res.status(200).send({ success: true, data: match });
 })
 
+exports.getMatchsByUserAddress = catchAsync(async (req, res, next) => {
+    const userAddress = req.params.userAddress;
+
+    console.log(userAddress,"aas");
+    const matchs = await Match.find({$or: [{matchCreatorAddress:userAddress},{matchJoinerAddress: userAddress}]});
+
+    // if (!match) {
+    //     return next(new AppError("No Match found with that ID", 404));
+    // }
+    return res.status(200).send({ success: true, data: matchs });
+})
+
+
 
 exports.joinMatch = catchAsync(async (req, res, next) => {
     const { matchId, matchJoinerAddress } = req.body;
