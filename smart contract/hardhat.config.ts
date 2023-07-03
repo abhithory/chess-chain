@@ -13,7 +13,7 @@ const config: HardhatUserConfig = {
   networks:{
     ganache:{
       url:"http://127.0.0.1:8545",
-      accounts: ["0x24cce63cbf7a0eb251e6357f44d118b61153ed5c69f67782f783e89455b0649f"]
+      accounts: ["0x423b1caeb1b7c22de38a9211c01862ff2a58ce298d7c2717e157591244cde04f"]
     },
     fantomTestnet: {
       // 0xfa2

@@ -9,7 +9,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage, ERC721Enumerable {
+contract ChessChainGameplay is
+    Ownable,
+    ERC721,
+    ReentrancyGuard,
+    ERC721URIStorage,
+    ERC721Enumerable
+{
     enum MatchResult {
         MATCH_CREATOR,
         MATCH_JOINER,
@@ -39,18 +45,26 @@ contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage
     mapping(string => Match) public matchOf;
 
     uint256 public WinnerStakeAmountTimes = 2;
-    uint256 public totalNftMinted;
 
     // TODO: Events for match created, started, ended
 
+    event MatchCreated(
+        string indexed matchId,
+        address indexed matchCreator,
+        uint256 stakeAmount
+    );
+
+    event MatchStarted(string indexed matchId, address indexed mathJoiner);
+    event MatchEnded(string indexed matchId, address indexed matchCreator, address indexed matchJoiner,MatchResult gameResult, string matchDataURI);
+
     constructor() ERC721("ChessChainNFT", "CCN") {}
 
-    function mintNft(
-        address _matchWinner,
-        string memory _tokenURI
-    ) private returns (uint256) {
-        totalNftMinted++;
-        uint256 nftId = totalNftMinted;
+    function mintNft(address _matchWinner, string memory _tokenURI)
+        private
+        returns (uint256)
+    {
+        uint256 _total = totalSupply();
+        uint256 nftId = _total + 1;
         _mint(_matchWinner, nftId);
         _setTokenURI(nftId, _tokenURI);
         return nftId;
@@ -72,12 +86,14 @@ contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage
         matchOf[matchId].matchCreator = matchCreator;
         matchOf[matchId].stakeAmount = stakeAmount;
         matchOf[matchId].createTime = block.timestamp;
+
+        emit MatchCreated(matchId, matchCreator, stakeAmount);
     }
 
-    function joinMatch(
-        string memory matchId,
-        address matchJoiner
-    ) external payable {
+    function joinMatch(string memory matchId, address matchJoiner)
+        external
+        payable
+    {
         require(
             matchOf[matchId].matchStatus == MatchStatus.CREATED,
             "Invailid request for this matchId"
@@ -90,6 +106,8 @@ contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage
         matchOf[matchId].matchStatus = MatchStatus.STARTED;
         matchOf[matchId].matchJoiner = matchJoiner;
         matchOf[matchId].startTime = block.timestamp;
+        emit MatchStarted(matchId, matchJoiner);
+
     }
 
     // TODO: connect with external api to check the game result || chainlink
@@ -141,26 +159,33 @@ contract ChessChainGameplay is Ownable,ERC721, ReentrancyGuard, ERC721URIStorage
                 WinnerStakeAmountTimes * matchOf[matchId].stakeAmount
             );
         }
+
+        emit MatchEnded(matchId, matchOf[matchId].matchCreator, matchOf[matchId].matchJoiner, gameResult, matchDataURI);
     }
 
-    function transferAmount(
-        address _user,
-        uint256 _amount
-    ) private nonReentrant {
+
+    function transferAmount(address _user, uint256 _amount)
+        private
+        nonReentrant
+    {
         (bool success, ) = address(_user).call{value: _amount}("");
         require(success, "sending money failed");
     }
 
-
     // The following functions are overrides required by Solidity for nft contract.
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
     }
 
