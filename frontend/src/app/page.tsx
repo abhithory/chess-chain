@@ -22,6 +22,7 @@ export default function Home() {
       <div className="flex-1 flex_center text-text-color ">
         <h1 className="text-6xl font-bold primary_gradient">Welcome to Chess Chain</h1>
         <p className='text-center mb-4 mt-1'>Your Moves, Forever Captured. </p>
+        
         <p className='w-[80%] text-center text-lg mb-8'>Play chess like never before in a blockchain-powered game. Stake tokens, battle global opponents, and have each Match immortalized as an NFT. Collect, trade, and showcase your unique moves. </p>
 
         {address ?
@@ -32,6 +33,7 @@ export default function Home() {
           :
           <>
             <ConnectWallet btnTitle="Connect Wallet To Play" theme="dark" className='px-8 py-4 text-lg'/>
+          <p className='text-center mb-4 mt-1'>Connect with Fantom Mainnet to play</p>
           </>
         }
       </div>

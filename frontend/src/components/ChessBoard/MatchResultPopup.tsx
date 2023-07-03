@@ -67,7 +67,7 @@ function MatchResultPopup({ matchEndData, matchId, stakeAmount, opponentAddress,
         const _matchEnded = await endMatch(matchId, nftMetaDataURI, nftMetaDataURI, matchEndData.matchResult);
         if (_matchEnded) {
             const response = await setRewardClaimedApiCall(matchId);
-            if (response?.statusText !== "OK") {
+            if (Number(response?.status) >= 400) {
                 toast.error('Something Went wrong. Try Again')
             }
             setRewardClaimed(true);
@@ -80,7 +80,7 @@ function MatchResultPopup({ matchEndData, matchId, stakeAmount, opponentAddress,
     async function updateMatchStatus() {
         setUpdatingMatchStatus(true);
         const response = await setMatchWinnerApiCall(matchId, matchEndData.amIWinner ? myAddress : opponentAddress, matchEndData.isDraw ? MatchResultStausEnum.DRAW : MatchResultStausEnum.WON);
-        if (response?.statusText !== "OK") {
+        if (Number(response?.status) >= 400) {
             toast.error('Something Went wrong. Try Again.')
         }
         setUpdatingMatchStatus(false);

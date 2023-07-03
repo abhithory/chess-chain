@@ -33,8 +33,6 @@ exports.getMatchById = catchAsync(async (req, res, next) => {
 
 exports.getMatchsByUserAddress = catchAsync(async (req, res, next) => {
     const userAddress = req.params.userAddress;
-
-    console.log(userAddress,"aas");
     const matchs = await Match.find({$or: [{matchCreatorAddress:userAddress},{matchJoinerAddress: userAddress}]});
 
     // if (!match) {

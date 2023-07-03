@@ -29,17 +29,20 @@ function CreateMatch() {
         setMatchCreating(true);
         const response: AxiosResponse<MatchDataResponse> | undefined = await createMatchApiCall(address, stackedAmount);
 
-        if (response?.statusText === "OK") {
+        console.log(response);
+        
+
+        if (Number(response?.status) < 400 && response?.data?.data) {
             const _matchId = response?.data?.data?.matchId;
             const matchCreated = await createMatch(_matchId,stackedAmount);
             if (matchCreated) {
                 router.push(`/match/${_matchId}`)
             } else {
-                toast.error('Something Went wrong. Try Again')
+                toast.error('Something Went wrong with web3 connection. Try Again')
                 setMatchCreating(false);
             }
         } else {
-            toast.error('Something Went wrong. Try Again')
+            toast.error('Something Went wrong with backend. Try Again')
             setMatchCreating(false);
         }
     }

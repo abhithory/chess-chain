@@ -28,7 +28,7 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
         setLoadingMatchData(true);
         if (!address) return
         const response = await getMatchDetailsApiCall(matchId);
-        if (response?.statusText === "OK") {
+        if (Number(response?.status) < 400 && response?.data?.data) {
             const data = response.data.data
             const isMatchCreator = data.matchCreatorAddress === address
             const boardOrientation = data.matchCreatorAddress === address ? "white" : "black";

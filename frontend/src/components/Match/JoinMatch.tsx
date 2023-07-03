@@ -35,7 +35,8 @@ function JoinMatch() {
         if (!address) return
         setMatchJoining(true);
         const response: AxiosResponse<MatchDataResponse> | undefined = await joinMatchApiCall(matchId, address);
-        if (response?.statusText === "OK") {
+
+        if (Number(response?.status) < 400 && response?.data?.data) {
             const _matchId = response?.data?.data?.matchId;
             const matchJoined = await joinMatch(_matchId, Number(matchDetails?.stackedAmount));
             if (matchJoined) {
@@ -55,7 +56,7 @@ function JoinMatch() {
         setLoadingMatchData(true);
         if (!address) return
         const response = await getMatchDetailsApiCall(matchId);
-        if (response?.statusText === "OK") {
+        if (Number(response?.status) < 400 && response?.data?.data) {
             const data = response.data.data
             setMatchDetails(data)
         } else {
