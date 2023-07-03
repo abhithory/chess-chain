@@ -9,7 +9,7 @@ import MovesHistroy from './ChessBoard/MovesHistroy';
 
 import MatchResultPopup from './ChessBoard/MatchResultPopup';
 import { MatchResultEnum } from '@/smartContract/networkDetails';
-import { MatchEndData } from '@/interface/matchInterface';import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
+import { MatchEndData } from '@/interface/matchInterface'; import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
 
 
 
@@ -63,8 +63,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
     function checkAndUpdateDetails() {
-
-        console.log("=================", game.turn(), "=================");
+        setGameHistroy([...game.history()])
         setIsCheck(game.in_check())
 
 
@@ -75,13 +74,10 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                 matchOver: true,
                 isDraw,
                 amIWinner,
-                matchResult: ((amIWinner && isMatchCreator) ? MatchResultEnum.MATCH_CREATOR : MatchResultEnum.MATCH_JOINER)
+                matchResult: isDraw ? MatchResultEnum.DRAW : ((amIWinner && isMatchCreator) ? MatchResultEnum.MATCH_CREATOR : MatchResultEnum.MATCH_JOINER)
             })
         }
 
-        // console.log(game.turn());
-        setGameHistroy([...game.history()])
-        // console.log(game.pgn({ max_width: 1 }));
 
         // console.log("gameover",game.game_over());
         // // // Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
@@ -165,7 +161,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                 <div className='flex items-stretch gap-10' ref={chessBoardDivRef}>
                     <div className='basis-7/12 h-full'>
                         <StyledChessBoard boardOrientation={boardOrientation}
-                            position={game.fen} onDrop={onDrop} />
+                            position={game.fen} onDrop={onDrop} myAddress={myAddress} opponentAddress={opponentAddress} isCheck={isCheck} />
                     </div>
                     <div className="basis-5/12 mr-4 mt-4">
                         <MovesHistroy movesHistory={gameHistroy} />
@@ -175,10 +171,10 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
             <LoadingModel isOpen={matchEndData?.matchOver}>
-                <MatchResultPopup  matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} chessBoardDivRef={chessBoardDivRef} pgn={game.pgn()} movesHistory={gameHistroy}  />
+                <MatchResultPopup matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} chessBoardDivRef={chessBoardDivRef} pgn={game.pgn()} movesHistory={gameHistroy} myAddress={myAddress} opponentAddress={opponentAddress} />
             </LoadingModel>
 
-            <LoadingModel  isOpen={!areBothPlayerConnected}>
+            <LoadingModel isOpen={!areBothPlayerConnected}>
                 <WaitingForOpponentPopup matchId={matchId} socket={socket} />
             </LoadingModel>
         </>
