@@ -4,13 +4,13 @@ import io from "socket.io-client";
 import * as ChessJS from "chess.js";
 import { ChessGameDetailsInterface } from '@/interface';
 import LoadingModel from './Model/LoadingModel';
-import SimpleLoader from './loader/loader';
-import CopyButton from './Buttons/CopyButton';
 import StyledChessBoard from './ChessBoard/StyledChessBoard';
 import MovesHistroy from './ChessBoard/MovesHistroy';
-import LoadingPrimaryBtn from './Buttons/LoadingPrimaryBtn';
 
-import { useRouter } from 'next/navigation'
+import MatchResultPopup from './ChessBoard/MatchResultPopup';
+import { MatchResultEnum } from '@/smartContract/networkDetails';
+import { MatchEndData } from '@/interface/matchInterface';
+import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
 
 
 
@@ -20,9 +20,8 @@ import { useRouter } from 'next/navigation'
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
-    const router = useRouter();
 
-    const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId } = chessGameDetails;
+    const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId, stakeAmount } = chessGameDetails;
 
     const [socket, setSocket] = useState<any>();
 
@@ -34,14 +33,12 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
     const [isCheck, setIsCheck] = useState(false);
 
-    const [matchEndData, setMatchEndData] = useState<any>({
+    const [matchEndData, setMatchEndData] = useState<MatchEndData>({
         matchOver: false,
-        amIWinner: false
+        isDraw: false,
+        amIWinner: false,
+        matchResult: MatchResultEnum.DRAW
     });
-
-
-    const [transactionLoading, setTransactionLoading] = useState(false)
-
 
 
     function makeAMove(move: { from: any; to: any; promotion: any; }) {
@@ -73,9 +70,13 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
         if (game.game_over()) {
+            const isDraw = game.in_draw();
+            const amIWinner = game.turn() !== boardOrientation[0];
             setMatchEndData({
                 matchOver: true,
-                amIWinner: game.turn() !== boardOrientation[0]
+                isDraw,
+                amIWinner,
+                matchResult: ((amIWinner && isMatchCreator) ? MatchResultEnum.MATCH_CREATOR : MatchResultEnum.MATCH_JOINER)
             })
         }
 
@@ -159,9 +160,6 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
         };
     }, [setSocket]);
 
-    const boardwidth = Math.round((Math.min(window.innerWidth, window.innerHeight) * 0.80));
-
-
     return (
         <>
             {areBothPlayerConnected &&
@@ -179,36 +177,11 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
             <LoadingModel isOpen={matchEndData?.matchOver}>
-                <div className="flex_center gap-2 text-text-color">
-
-                    <h1 className='text-3xl mb-4 font-bold'>Match Over</h1>
-                    <h2 className='text-2xl  font-semibold'>{matchEndData?.amIWinner ? "You are winner" : "You lost the game"}</h2>
-                    {matchEndData?.amIWinner &&
-                        <>
-                            <LoadingPrimaryBtn text='Reedem Winning Price' loading={transactionLoading} onClick={() => setTransactionLoading(false)} disabled={transactionLoading} />
-                            <LoadingPrimaryBtn className='' text='Mint Match NFT' loading={transactionLoading} onClick={() => setTransactionLoading(false)} disabled={transactionLoading} />
-                        </>
-                    }
-                    <button className='basic_btn_3 mt-4' onClick={()=>router.push("/")}>Play Again</button>
-                </div>
+                <MatchResultPopup matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} />
             </LoadingModel>
 
             <LoadingModel isOpen={!areBothPlayerConnected}>
-                {socket ?
-                    <div className='text-text-color'>
-                        <h2 className='text-2xl'>Waiting for opponent to join</h2>
-                        <SimpleLoader className='w-12 my-4' />
-
-                        <div className="flex_center border border-black rounded-xl  py-4  mx-8">
-
-                            <h3 className='text-lg mb-2 '>Share this mathId with other player</h3>
-                            <h1>{matchId}</h1>
-                            <CopyButton text={matchId} />
-                        </div>
-                    </div>
-                    :
-                    <h1>Connecting with server...</h1>
-                }
+                <WaitingForOpponentPopup matchId={matchId} socket={socket} />
             </LoadingModel>
         </>
     )

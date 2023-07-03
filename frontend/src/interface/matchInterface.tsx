@@ -1,3 +1,4 @@
+import { MatchResultEnum } from "@/smartContract/networkDetails";
 
 export interface MatchDataResponse {
   data: MatchData,
@@ -11,4 +12,11 @@ export interface MatchData {
     matchJoinerAddress: string;
     matchWinnerAddress: string;
     createdAt: Date;
+  }
+
+  export interface MatchEndData {
+    matchOver: boolean;
+    isDraw:boolean;
+    amIWinner: boolean;
+    matchResult: MatchResultEnum;
   }

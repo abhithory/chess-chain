@@ -5,4 +5,5 @@ export interface ChessGameDetailsInterface {
     boardOrientation: "white" | "black";
     myAddress: string;
     opponentAddress: string;
+    stakeAmount: number;
 }

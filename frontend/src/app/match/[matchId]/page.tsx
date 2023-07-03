@@ -18,6 +18,7 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
         boardOrientation: "white",
         myAddress: "",
         opponentAddress: "",
+        stakeAmount: 0
     })
 
 
@@ -31,7 +32,7 @@ export default function Page({ params: { matchId } }: { params: { matchId: strin
             const data = response.data.data
             const isMatchCreator = data.matchCreatorAddress === address
             const boardOrientation = data.matchCreatorAddress === address ? "white" : "black";
-            setChessGameDetails({ matchId, isMatchCreator, boardOrientation, myAddress: address, opponentAddress: isMatchCreator ? data.matchJoinerAddress : data.matchCreatorAddress })
+            setChessGameDetails({ matchId, isMatchCreator, boardOrientation, myAddress: address, opponentAddress: isMatchCreator ? data.matchJoinerAddress : data.matchCreatorAddress,stakeAmount: data.stackedAmount })
             setLoadingMatchData(false);
         }
     }
