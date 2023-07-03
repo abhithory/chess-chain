@@ -42,7 +42,7 @@ contract ChessChainGameplay is
         uint256 endTime;
     }
 
-    mapping(string => Match) public matchOf;
+    mapping(string => Match) public matchDetailOf;
 
     uint256 public WinnerStakeAmountTimes = 2;
 
@@ -76,36 +76,35 @@ contract ChessChainGameplay is
         uint256 stakeAmount
     ) external payable {
         require(
-            matchOf[matchId].matchStatus == MatchStatus.NOT_CREATED,
+            matchDetailOf[matchId].matchStatus == MatchStatus.NOT_CREATED,
             "Already match created with this mathch id"
         );
         require(msg.value >= stakeAmount, "send full stake amount");
 
-        matchOf[matchId].matchStatus = MatchStatus.CREATED;
-        matchOf[matchId].matchId = matchId;
-        matchOf[matchId].matchCreator = matchCreator;
-        matchOf[matchId].stakeAmount = stakeAmount;
-        matchOf[matchId].createTime = block.timestamp;
+        matchDetailOf[matchId].matchStatus = MatchStatus.CREATED;
+        matchDetailOf[matchId].matchId = matchId;
+        matchDetailOf[matchId].matchCreator = matchCreator;
+        matchDetailOf[matchId].stakeAmount = stakeAmount;
+        matchDetailOf[matchId].createTime = block.timestamp;
 
         emit MatchCreated(matchId, matchCreator, stakeAmount);
     }
 
     function joinMatch(string memory matchId, address matchJoiner)
-        external
-        payable
+        external payable
     {
         require(
-            matchOf[matchId].matchStatus == MatchStatus.CREATED,
+            matchDetailOf[matchId].matchStatus == MatchStatus.CREATED,
             "Invailid request for this matchId"
         );
         require(
-            msg.value >= matchOf[matchId].stakeAmount,
+            msg.value >= matchDetailOf[matchId].stakeAmount,
             "send full stake amount"
         );
 
-        matchOf[matchId].matchStatus = MatchStatus.STARTED;
-        matchOf[matchId].matchJoiner = matchJoiner;
-        matchOf[matchId].startTime = block.timestamp;
+        matchDetailOf[matchId].matchStatus = MatchStatus.STARTED;
+        matchDetailOf[matchId].matchJoiner = matchJoiner;
+        matchDetailOf[matchId].startTime = block.timestamp;
         emit MatchStarted(matchId, matchJoiner);
 
     }
@@ -113,54 +112,54 @@ contract ChessChainGameplay is
     // TODO: connect with external api to check the game result || chainlink
     function endMatch(
         string memory matchId,
-        string memory matchNftURI,
         string memory matchDataURI,
+        string memory matchNftURI,
         MatchResult gameResult
-    ) external payable {
+    ) external {
         require(
-            matchOf[matchId].matchStatus == MatchStatus.STARTED,
+            matchDetailOf[matchId].matchStatus == MatchStatus.STARTED,
             "Invailid request for this matchId"
         );
         require(
-            msg.sender == matchOf[matchId].matchCreator ||
-                msg.sender == matchOf[matchId].matchJoiner,
+            msg.sender == matchDetailOf[matchId].matchCreator ||
+                msg.sender == matchDetailOf[matchId].matchJoiner,
             "only match creator || joiner || admin"
         );
 
-        matchOf[matchId].matchStatus = MatchStatus.ENDED;
-        matchOf[matchId].gameResult = gameResult;
-        matchOf[matchId].matchDataURI = matchDataURI;
-        matchOf[matchId].endTime = block.timestamp;
+        matchDetailOf[matchId].matchStatus = MatchStatus.ENDED;
+        matchDetailOf[matchId].gameResult = gameResult;
+        matchDetailOf[matchId].matchDataURI = matchDataURI;
+        matchDetailOf[matchId].endTime = block.timestamp;
 
         address winnerAddress = address(0);
 
         if (gameResult == MatchResult.DRAW) {
             transferAmount(
-                matchOf[matchId].matchCreator,
-                matchOf[matchId].stakeAmount
+                matchDetailOf[matchId].matchCreator,
+                matchDetailOf[matchId].stakeAmount
             );
             transferAmount(
-                matchOf[matchId].matchJoiner,
-                matchOf[matchId].stakeAmount
+                matchDetailOf[matchId].matchJoiner,
+                matchDetailOf[matchId].stakeAmount
             );
         } else if (gameResult == MatchResult.MATCH_CREATOR) {
-            winnerAddress = matchOf[matchId].matchCreator;
+            winnerAddress = matchDetailOf[matchId].matchCreator;
         } else if (gameResult == MatchResult.MATCH_JOINER) {
-            winnerAddress = matchOf[matchId].matchJoiner;
+            winnerAddress = matchDetailOf[matchId].matchJoiner;
         }
 
         if (winnerAddress != address(0)) {
             uint256 _nftId = mintNft(winnerAddress, matchNftURI);
 
-            matchOf[matchId].nftId = _nftId;
+            matchDetailOf[matchId].nftId = _nftId;
 
             transferAmount(
                 winnerAddress,
-                WinnerStakeAmountTimes * matchOf[matchId].stakeAmount
+                WinnerStakeAmountTimes * matchDetailOf[matchId].stakeAmount
             );
         }
 
-        emit MatchEnded(matchId, matchOf[matchId].matchCreator, matchOf[matchId].matchJoiner, gameResult, matchDataURI);
+        emit MatchEnded(matchId, matchDetailOf[matchId].matchCreator, matchDetailOf[matchId].matchJoiner, gameResult, matchDataURI);
     }
 
 
