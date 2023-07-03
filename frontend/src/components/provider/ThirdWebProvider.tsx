@@ -27,8 +27,8 @@ function ThirdWebProvider({ children }: any) {
     return (
         <ThirdwebProvider
             supportedWallets={[metamaskWallet()]}
-            activeChain="ganache"
-            supportedChains={[ Ganache, FantomTestnet, Fantom]}
+            activeChain="fantom-testnet"
+            supportedChains={[ FantomTestnet, Fantom]}
             dAppMeta={{
                 name: "Chess Chain",
                 description: "chess chain desss",

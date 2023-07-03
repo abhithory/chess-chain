@@ -88,6 +88,9 @@ function MatchResultPopup({ matchEndData, matchId, stakeAmount, opponentAddress,
     useEffect(() => {
         if ((matchEndData?.matchOver &&  matchEndData?.amIWinner) || matchEndData.isDraw) {
             updateMatchStatus()
+        } else {
+        setUpdatingMatchStatus(false);
+
         }
 
     }, [matchEndData])

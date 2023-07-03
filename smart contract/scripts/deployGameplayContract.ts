@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-// npx hardhat verify --network polygon 0x00e36A2C56770b42FD32f7dF77c7325B38861260
+// npx hardhat verify --network fantomTestnet 0xcDc7c4f6649C6c3E3b99deD2BA2e8a3b2DEA07eE
 async function main() {
 
   const chessChainContract = await ethers.deployContract("ChessChainGameplay");
