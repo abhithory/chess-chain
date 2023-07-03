@@ -39,44 +39,44 @@ const Web3ConnectionWrapper = ({ children }: any) => {
         return OrchidzBuildCreatorContract;
     }
 
-    async function getNftMetaData(nftId: number) {
-        try {
-            const OrchidzBuildCreatorContract = await getContract();
-            const tx = await OrchidzBuildCreatorContract?.call(
-                'nftDetailOf', // Name of your function as it is on the smart contract
-                [
-                    nftId
-                ]
-            );
-            const durii = await storage?.download(tx.uri);
-            // const metadataReq = await fetch(durii.url);
-            // const metadata = await metadataReq.json();
-            // const _imgurl = await storage.download(metadata.image);
-            // return {
-            //     ...metadata,
-            //     price: Number(Number(tx.mintPrice) / 10 ** 18),
-            //     image: _imgurl.url
-            // };
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // async function getNftMetaData(nftId: number) {
+    //     try {
+    //         const OrchidzBuildCreatorContract = await getContract();
+    //         const tx = await OrchidzBuildCreatorContract?.call(
+    //             'nftDetailOf', // Name of your function as it is on the smart contract
+    //             [
+    //                 nftId
+    //             ]
+    //         );
+    //         const durii = await storage?.download(tx.uri);
+    //         // const metadataReq = await fetch(durii.url);
+    //         // const metadata = await metadataReq.json();
+    //         // const _imgurl = await storage.download(metadata.image);
+    //         // return {
+    //         //     ...metadata,
+    //         //     price: Number(Number(tx.mintPrice) / 10 ** 18),
+    //         //     image: _imgurl.url
+    //         // };
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
-    async function getUserNftBalance(nftId: number) {
-        try {
-            const OrchidzBuildCreatorContract = await getContract();
-            const tx = await OrchidzBuildCreatorContract?.call(
-                'balanceOf', // Name of your function as it is on the smart contract
-                [
-                    address,
-                    nftId
-                ]
-            );
-            return tx
-        } catch (error) {
-            console.log("balanceOf error", error);
-        }
-    }
+    // async function getUserNftBalance(nftId: number) {
+    //     try {
+    //         const OrchidzBuildCreatorContract = await getContract();
+    //         const tx = await OrchidzBuildCreatorContract?.call(
+    //             'balanceOf', // Name of your function as it is on the smart contract
+    //             [
+    //                 address,
+    //                 nftId
+    //             ]
+    //         );
+    //         return tx
+    //     } catch (error) {
+    //         console.log("balanceOf error", error);
+    //     }
+    // }
 
     async function createMatch(matchId: string, stakeAmount: number): Promise<boolean> {
         try {

@@ -11,7 +11,7 @@ function Navigation() {
   const pathname = usePathname();
 
   if (pathname.startsWith("/match/")) {
-    return 
+    return <></>
   }
   return (
     <div className="glassmorphism-bg bg-secondary/30 w-full flex justify-between px-20 py-4">
