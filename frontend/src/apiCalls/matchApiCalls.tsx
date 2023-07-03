@@ -1,7 +1,7 @@
 import { MatchDataResponse, MatchResultStausEnum, MatchsDataResponse } from '@/interface/matchInterface';
 import axios, { AxiosResponse } from 'axios';
 
-export const apiBaseUrl = "http://localhost:3001/api/v1"
+export const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/v1"
 
 export const getMatchDetailsApiCall = async (matchId:string) => {
     try {
