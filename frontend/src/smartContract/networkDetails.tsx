@@ -1,4 +1,4 @@
-export const ChessChainGameplayContract = "0xcDc7c4f6649C6c3E3b99deD2BA2e8a3b2DEA07eE";
+export const ChessChainGameplayContract = "0x067268F66B8312c2382C9055fa2615baDd124354";
 
 export enum MatchResultEnum {
     MATCH_CREATOR = 0,

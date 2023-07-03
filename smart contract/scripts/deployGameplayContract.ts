@@ -1,6 +1,7 @@
 import { ethers } from "hardhat";
 
-// npx hardhat verify --network fantomTestnet 0xcDc7c4f6649C6c3E3b99deD2BA2e8a3b2DEA07eE
+// npx hardhat run scripts/deployGameplayContract.ts --network fantomMainnet
+// npx hardhat verify --network fantomMainnet 0x067268F66B8312c2382C9055fa2615baDd124354
 async function main() {
 
   const chessChainContract = await ethers.deployContract("ChessChainGameplay");

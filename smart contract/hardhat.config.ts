@@ -29,7 +29,7 @@ const config: HardhatUserConfig = {
   etherscan:{
     apiKey: {
       ftmTestnet:ftmscanKey,      
-      fantomMainnet:ftmscanKey      
+      opera:ftmscanKey      
     }
 }
 };
