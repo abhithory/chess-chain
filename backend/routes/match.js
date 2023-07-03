@@ -1,5 +1,5 @@
 const express = require("express");
-const { createMatch, getMatchById, joinMatch, setMatchWinner } = require("../controller/matchController");
+const { createMatch, getMatchById, joinMatch, setMatchWinner, rewardClaimed } = require("../controller/matchController");
 
 const matchRouter = express.Router();
 
@@ -19,6 +19,10 @@ matchRouter
 matchRouter
     .route("/setmatchwinner")
     .patch(setMatchWinner);
+
+matchRouter
+    .route("/rewardClaimed")
+    .patch(rewardClaimed);
 
 
 

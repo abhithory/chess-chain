@@ -54,3 +54,14 @@ exports.setMatchWinner = catchAsync(async (req, res, next) => {
     return res.status(200).send({ success: true, data: match });
 })
 
+exports.rewardClaimed = catchAsync(async (req, res, next) => {
+    const { matchId } = req.body;
+    const match = await Match.findOneAndUpdate({matchId}, {
+        rewardClaimed: true
+    });
+    if (!match) {
+        return next(new AppError("No Match found with that ID", 404));
+    }
+    return res.status(200).send({ success: true, data: match });
+})
+
