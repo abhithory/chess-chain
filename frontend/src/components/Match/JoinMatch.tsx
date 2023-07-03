@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { MatchData, MatchDataResponse } from '@/interface/matchInterface';
 import { createMatchApiCall, getMatchDetailsApiCall, joinMatchApiCall } from '@/apiCalls/matchApiCalls';
 import { AxiosResponse } from 'axios';
@@ -11,14 +11,17 @@ import { useAddress } from "@thirdweb-dev/react";
 import PopUpModel from "@/components/Model/PopUpModel";
 import { FaChessKing } from 'react-icons/fa';
 import LoadingPrimaryBtn from '../Buttons/LoadingPrimaryBtn';
+import { Web3ConnectionContext } from '@/smartContract/Web3ConnectionContext';
 
 
 function JoinMatch() {
     const router = useRouter();
-    const address = useAddress();
+
+
+    const { address, joinMatch } = useContext(Web3ConnectionContext);
+
 
     const [matchId, setMatchId] = useState("");
-    const [stackedAmount, setStackedAmount] = useState(0);
     const [matchJoining, setMatchJoining] = useState(false);
     const [loadingMatchData, setLoadingMatchData] = useState(false);
 
@@ -27,14 +30,21 @@ function JoinMatch() {
 
     const [isModelOpen, setIsModelOpen] = useState(false);
 
-    async function joinMatch() {
+    async function joinMatchHandler() {
         if (!address) return
         setMatchJoining(true);
         const response: AxiosResponse<MatchDataResponse> | undefined = await joinMatchApiCall(matchId, address);
         if (response?.statusText === "OK") {
-            router.push(`/match/${response?.data?.data?.matchId}`)
+            const _matchId = response?.data?.data?.matchId;
+            const matchJoined = await joinMatch(_matchId,Number(matchDetails?.stackedAmount));
+            if (matchJoined) {
+                router.push(`/match/${_matchId}`)
+            } else{
+                setMatchJoining(false);
+            }
+        } else {
+            setMatchJoining(false);
         }
-        setMatchJoining(false);
     }
 
 
@@ -44,7 +54,6 @@ function JoinMatch() {
         const response = await getMatchDetailsApiCall(matchId);
         if (response?.statusText === "OK") {
             const data = response.data.data
-            setStackedAmount(Number(data.stackedAmount));
             setMatchDetails(data)
         }else {
             setLoadingMatchData(false);
@@ -74,7 +83,7 @@ function JoinMatch() {
                             <h4>Stake Amount: {matchDetails.stackedAmount} FTM</h4>
                             <h4>Winner Amount: {2*matchDetails.stackedAmount} FTM</h4>
                             </div>
-                            <LoadingPrimaryBtn text='Join Match' loading={matchJoining} onClick={joinMatch} disabled={matchJoining}  />
+                            <LoadingPrimaryBtn text='Join Match' loading={matchJoining} onClick={joinMatchHandler} disabled={matchJoining}  />
                         </div>
                     </>
                         :

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MatchDataResponse } from '@/interface/matchInterface';
 import { createMatchApiCall } from '@/apiCalls/matchApiCalls';
@@ -11,28 +11,35 @@ import { FaChessQueen } from 'react-icons/fa'
 import PopUpModel from "@/components/Model/PopUpModel";
 import StyleButton1 from '../Buttons/StyleButton1';
 import LoadingPrimaryBtn from '../Buttons/LoadingPrimaryBtn';
-
+import { Web3ConnectionContext } from '@/smartContract/Web3ConnectionContext';
+import { toast } from 'react-toastify';
 
 function CreateMatch() {
     const router = useRouter();
-    const address = useAddress();
 
+    const { address, createMatch } = useContext(Web3ConnectionContext);
 
     const [stackedAmount, setStackedAmount] = useState(0);
     const [matchCreating, setMatchCreating] = useState(false);
 
     const [isModelOpen, setIsModelOpen] = useState(false);
 
-    async function createMatch() {
+    async function createMatchHandler() {
         if (!address || stackedAmount <= 0) return
         setMatchCreating(true);
         const response: AxiosResponse<MatchDataResponse> | undefined = await createMatchApiCall(address, stackedAmount);
-        console.log(response);
 
         if (response?.statusText === "OK") {
-            router.push(`/match/${response?.data?.data?.matchId}`)
+            const _matchId = response?.data?.data?.matchId;
+            const matchCreated = await createMatch(_matchId,stackedAmount);
+            if (matchCreated) {
+                router.push(`/match/${_matchId}`)
+            } else {
+                toast.error('Something Went wrong. Try Again')
+                setMatchCreating(false);
+            }
         } else {
-
+            toast.error('Something Went wrong. Try Again')
             setMatchCreating(false);
         }
     }
@@ -58,7 +65,7 @@ function CreateMatch() {
                 <div className="flex_center ">
                     <h1 className="text-4xl text-text-color font-bold mb-12">Create Match</h1>
                     <input className='basic_input' type="number" value={stackedAmount} onChange={(e) => setStackedAmount(Number(e.target.value))} placeholder="How much FTM do you want to stake?" />
-                    <LoadingPrimaryBtn className='basic_btn_2 my-2' text='Create Match' loading={matchCreating} onClick={createMatch} disabled={matchCreating}  />
+                    <LoadingPrimaryBtn className='basic_btn_2 my-2' text='Create Match' loading={matchCreating} onClick={createMatchHandler} disabled={matchCreating}  />
                     <h3 className="text-md text-text-color">Winner will get: {2*stackedAmount} FTM</h3>
 
                 </div>

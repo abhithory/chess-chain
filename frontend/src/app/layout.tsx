@@ -2,6 +2,9 @@ import Navigation from '@/components/Navigation'
 import ThirdWebProvider from '@/components/provider/ThirdWebProvider'
 import Web3ConnectionWrapper from '@/smartContract/Web3ConnectionContext'
 import '@/style/globals.css'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const metadata = {
   title: 'Chess Chain',
@@ -21,6 +24,7 @@ export default function RootLayout({
             <main className='full-h-w'>
               <Navigation />
               {children}
+              <ToastContainer />
             </main>
           </Web3ConnectionWrapper>
         </ThirdWebProvider>
