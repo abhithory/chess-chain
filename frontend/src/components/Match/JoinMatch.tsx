@@ -12,6 +12,7 @@ import PopUpModel from "@/components/Model/PopUpModel";
 import { FaChessKing } from 'react-icons/fa';
 import LoadingPrimaryBtn from '../Buttons/LoadingPrimaryBtn';
 import { Web3ConnectionContext } from '@/smartContract/Web3ConnectionContext';
+import { toast } from 'react-toastify';
 
 
 function JoinMatch() {
@@ -36,11 +37,13 @@ function JoinMatch() {
         const response: AxiosResponse<MatchDataResponse> | undefined = await joinMatchApiCall(matchId, address);
         if (response?.statusText === "OK") {
             const _matchId = response?.data?.data?.matchId;
-            const matchJoined = await joinMatch(_matchId,Number(matchDetails?.stackedAmount));
+            const matchJoined = await joinMatch(_matchId, Number(matchDetails?.stackedAmount));
             if (matchJoined) {
                 router.push(`/match/${_matchId}`)
-            } else{
+            } else {
+                toast.error('Something Went wrong. Try Again')
                 setMatchJoining(false);
+
             }
         } else {
             setMatchJoining(false);
@@ -55,7 +58,7 @@ function JoinMatch() {
         if (response?.statusText === "OK") {
             const data = response.data.data
             setMatchDetails(data)
-        }else {
+        } else {
             setLoadingMatchData(false);
         }
     }
@@ -74,20 +77,20 @@ function JoinMatch() {
 
 
                     {matchDetails ?
-                    <>
-                        <div className='flex_center text-white gap-2'>
+                        <>
+                            <div className='flex_center text-white gap-2'>
 
-                            <div className="flex_center border rounded-xl px-8 py-4 mt-8">
-                                <h3 className="text-lg">Match Details</h3>
-                            <h4 >Opponent Address: {matchDetails.matchCreatorAddress}</h4>
-                            <h4>Stake Amount: {matchDetails.stackedAmount} FTM</h4>
-                            <h4>Winner Amount: {2*matchDetails.stackedAmount} FTM</h4>
+                                <div className="flex_center border rounded-xl px-8 py-4 mt-8">
+                                    <h3 className="text-lg">Match Details</h3>
+                                    <h4 >Opponent Address: {matchDetails.matchCreatorAddress}</h4>
+                                    <h4>Stake Amount: {matchDetails.stackedAmount} FTM</h4>
+                                    <h4>Winner Amount: {2 * matchDetails.stackedAmount} FTM</h4>
+                                </div>
+                                <LoadingPrimaryBtn text='Join Match' loading={matchJoining} onClick={joinMatchHandler} disabled={matchJoining} />
                             </div>
-                            <LoadingPrimaryBtn text='Join Match' loading={matchJoining} onClick={joinMatchHandler} disabled={matchJoining}  />
-                        </div>
-                    </>
+                        </>
                         :
-                        <LoadingPrimaryBtn className='mt-2' text='Load Match Details' loading={matchJoining} onClick={loadMatchDetails} disabled={matchJoining}  />
+                        <LoadingPrimaryBtn className='mt-2' text='Load Match Details' loading={matchJoining} onClick={loadMatchDetails} disabled={matchJoining} />
 
 
                     }

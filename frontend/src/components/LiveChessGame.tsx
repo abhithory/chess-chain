@@ -21,8 +21,9 @@ const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId, stakeAmount } = chessGameDetails;
 
-    const [socket, setSocket] = useState<any>();
+    const [opponentWalletAddress, setOpponentWalletAddress] = useState(opponentAddress)
 
+    const [socket, setSocket] = useState<any>();
 
     const [game, setGame] = useState(new Chess());
     const [gameHistroy, setGameHistroy] = useState<string[]>([]);
@@ -112,8 +113,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
             socket.on("connection-req-from-player", (_matchId: string, _opponentAddress: string) => {
                 console.log("3. request from opponed", _opponentAddress);
-                console.log(_matchId);
-
+                setOpponentWalletAddress(_opponentAddress)
                 socket.emit("connection-req-accepted", matchId, _opponentAddress, setBothPlayerConnected);
             })
         } else {
@@ -161,7 +161,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
                 <div className='flex items-stretch gap-10' ref={chessBoardDivRef}>
                     <div className='basis-7/12 h-full'>
                         <StyledChessBoard boardOrientation={boardOrientation}
-                            position={game.fen} onDrop={onDrop} myAddress={myAddress} opponentAddress={opponentAddress} isCheck={isCheck} />
+                            position={game.fen} onDrop={onDrop} myAddress={myAddress} opponentAddress={opponentWalletAddress} isCheck={isCheck} />
                     </div>
                     <div className="basis-5/12 mr-4 mt-4">
                         <MovesHistroy movesHistory={gameHistroy} />
@@ -171,7 +171,7 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
             <LoadingModel isOpen={matchEndData?.matchOver}>
-                <MatchResultPopup matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} chessBoardDivRef={chessBoardDivRef} pgn={game.pgn()} movesHistory={gameHistroy} myAddress={myAddress} opponentAddress={opponentAddress} />
+                <MatchResultPopup matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} chessBoardDivRef={chessBoardDivRef} pgn={game.pgn()} movesHistory={gameHistroy} myAddress={myAddress} opponentAddress={opponentWalletAddress} />
             </LoadingModel>
 
             <LoadingModel isOpen={!areBothPlayerConnected}>

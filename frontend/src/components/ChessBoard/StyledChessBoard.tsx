@@ -19,18 +19,18 @@ function StyledChessBoard({ position, boardOrientation, onDrop, myAddress, oppon
     return (
         <div className='flex_center '>
             <div className="glassmorphism-chessboard-bg ">
-                <div className="flex items-end w-full">
+                <div className="flex w-full text-text-color justify-end text-sm">
                     <p>{opponentAddress}</p>
                 </div>
                 <Chessboard boardWidth={boardwidth} boardOrientation={boardOrientation}
                     position={position()} onPieceDrop={onDrop}
                 />
-                <div className="flex w-full justify-between">
+                <div className="flex w-full justify-between text-text-color text-sm">
                     <p>
                         {myAddress}
                     </p>
                     {isCheck &&
-                        <p className="text-red-500">
+                        <p className="text-red-500 text-sm">
                             Check!
                         </p>
                     }

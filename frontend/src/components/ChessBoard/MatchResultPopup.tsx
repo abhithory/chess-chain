@@ -72,21 +72,21 @@ function MatchResultPopup({ matchEndData, matchId, stakeAmount, opponentAddress,
             }
             setRewardClaimed(true);
         } else {
-            toast.error('Something Went wrong. Try Again')
+            toast.error('Something Went wrong. Try Again. Or maybe your opponent already confirmed the transaction')
         }
         setTransactionLoading(false);
     }
 
     async function updateMatchStatus() {
         setUpdatingMatchStatus(true);
-        const response = await setMatchWinnerApiCall(matchId, matchEndData.amIWinner ? myAddress : opponentAddress, matchEndData.isDraw ? MatchResultStausEnum.DAWN : MatchResultStausEnum.WON);
+        const response = await setMatchWinnerApiCall(matchId, matchEndData.amIWinner ? myAddress : opponentAddress, matchEndData.isDraw ? MatchResultStausEnum.DRAW : MatchResultStausEnum.WON);
         if (response?.statusText !== "OK") {
-            toast.error('Something Went wrong. Try Again')
+            toast.error('Something Went wrong. Try Again.')
         }
         setUpdatingMatchStatus(false);
     }
     useEffect(() => {
-        if (matchEndData?.matchOver) {
+        if ((matchEndData?.matchOver &&  matchEndData?.amIWinner) || matchEndData.isDraw) {
             updateMatchStatus()
         }
 
