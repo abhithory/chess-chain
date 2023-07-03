@@ -31,6 +31,11 @@ function Navigation() {
           <FaLandmark  className=''/>
           Profile
           </h1>
+
+          <h1 className="basic_btn_4" onClick={()=>router.push("/marketplace")}>
+          {/* <FaLandmark  className=''/> */}
+          Marketplace
+          </h1>
         <ConnectWallet />
       </span>
     </div>
