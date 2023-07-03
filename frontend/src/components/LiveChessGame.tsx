@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import * as ChessJS from "chess.js";
 import { ChessGameDetailsInterface } from '@/interface';
@@ -9,8 +9,7 @@ import MovesHistroy from './ChessBoard/MovesHistroy';
 
 import MatchResultPopup from './ChessBoard/MatchResultPopup';
 import { MatchResultEnum } from '@/smartContract/networkDetails';
-import { MatchEndData } from '@/interface/matchInterface';
-import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
+import { MatchEndData } from '@/interface/matchInterface';import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
 
 
 
@@ -20,7 +19,6 @@ import WaitingForOpponentPopup from './ChessBoard/WaitingForOpponentPopup';
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetailsInterface }) {
-
     const { boardOrientation, myAddress, opponentAddress, isMatchCreator, matchId, stakeAmount } = chessGameDetails;
 
     const [socket, setSocket] = useState<any>();
@@ -30,8 +28,9 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     const [gameHistroy, setGameHistroy] = useState<string[]>([]);
 
     const [areBothPlayerConnected, setAreBothPlayerConnected] = useState(false);
-
     const [isCheck, setIsCheck] = useState(false);
+
+    const chessBoardDivRef = useRef(null);
 
     const [matchEndData, setMatchEndData] = useState<MatchEndData>({
         matchOver: false,
@@ -163,13 +162,12 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
     return (
         <>
             {areBothPlayerConnected &&
-                <div className='flex items-stretch gap-10'>
-
+                <div className='flex items-stretch gap-10' ref={chessBoardDivRef}>
                     <div className='basis-7/12 h-full'>
                         <StyledChessBoard boardOrientation={boardOrientation}
                             position={game.fen} onDrop={onDrop} />
                     </div>
-                    <div className="basis-5/12 ">
+                    <div className="basis-5/12 mr-4 mt-4">
                         <MovesHistroy movesHistory={gameHistroy} />
                     </div>
                 </div>
@@ -177,10 +175,10 @@ function LiveChessGame({ chessGameDetails }: { chessGameDetails: ChessGameDetail
 
 
             <LoadingModel isOpen={matchEndData?.matchOver}>
-                <MatchResultPopup matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} />
+                <MatchResultPopup  matchEndData={matchEndData} matchId={matchId} stakeAmount={stakeAmount} chessBoardDivRef={chessBoardDivRef} pgn={game.pgn()} movesHistory={gameHistroy}  />
             </LoadingModel>
 
-            <LoadingModel isOpen={!areBothPlayerConnected}>
+            <LoadingModel  isOpen={!areBothPlayerConnected}>
                 <WaitingForOpponentPopup matchId={matchId} socket={socket} />
             </LoadingModel>
         </>
