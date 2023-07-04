@@ -6,11 +6,12 @@ Chess Chain is a blockchain-based chess platform that combines the excitement of
 - [Chess Chain Frontend](https://chess-chain.vercel.app/) - https://chess-chain.vercel.app
 - [Chess Chain Smart contracts](https://ftmscan.com/address/0x067268F66B8312c2382C9055fa2615baDd124354) - https://ftmscan.com/address/0x067268F66B8312c2382C9055fa2615baDd124354
 
-    <iframe width="560" height="315"
-src="https://www.youtube.com/embed/TEAEoxuAwbI" 
-frameborder="0" 
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe>
+## Project Video
+
+<a href="https://www.youtube.com/watch?v=TEAEoxuAwbI" target="_blank">
+ <img src="https://img.youtube.com/vi/TEAEoxuAwbI/0.jpg" alt="Watch the video" width="600"  />
+</a>
+
 
 ## Features
 
