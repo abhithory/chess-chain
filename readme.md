@@ -8,9 +8,10 @@ Chess Chain is a blockchain-based chess platform that combines the excitement of
 
 ## Project Video
 
-<a href="https://www.youtube.com/watch?v=TEAEoxuAwbI" target="_blank">
- <img src="https://img.youtube.com/vi/TEAEoxuAwbI/0.jpg" alt="Watch the video" width="600"  />
-</a>
+
+https://github.com/abhithory/chess-chain/assets/76877003/06d8894b-b80e-4b20-bcf7-e3c43280ee9c
+
+
 
 
 ## Features
