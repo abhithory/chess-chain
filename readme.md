@@ -50,3 +50,8 @@ https://github.com/abhithory/chess-chain/assets/76877003/06d8894b-b80e-4b20-bcf7
 ## Contribution
 
 Contributions to Chess Chain are welcome! Feel free to open issues and submit pull requests for any enhancements or bug fixes.
+
+![Screenshot from 2023-11-28 02-59-43](https://github.com/abhithory/chess-chain/assets/76877003/32430b8a-f7f6-4443-a611-4f15cefb5cf8)
+
+
+
